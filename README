@@ -1,19 +1,20 @@
 Instructions for BNAT Scanner Setup on Ubuntu 10.04 LTS (lucid) 32-bit
 
-###Install Requirements##
+##Install Requirements##
 
-Run ‘apt-get install build-essential ruby1.8-dev libpcap-dev libpcap-ruby libpcap-dev libpcap-ruby wireshark tcpdump ruby rubygems’ as root
+Run "apt-get install build-essential ruby1.8-dev libpcap-dev libpcap-ruby libpcap-dev libpcap-ruby wireshark tcpdump ruby rubygems" as root
 
-Run ‘gem install pcaprub packetfu netaddr’ as root
+Run "gem install pcaprub packetfu netaddr" as root
 
 ##Set Path Variables##
-Add ‘export RUBYOPT=rubygems’ to .bashrc file in home directory
+Add "export RUBYOPT=rubygems" to .bashrc file in home directory
 
 ##Download Scanner Code##
 
-Run ‘wget https://github.com/claudijd/BNAT-Suite/blob/master/bnat-scan.rb’ as root
-Prevent RST’s from Breaking Connections
-Run ‘iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP’ as root
+Run "wget https://github.com/claudijd/BNAT-Suite/blob/master/bnat-scan.rb" as root
+
+##Prevent RST’s from Breaking Connections##
+Run "iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP" as root
 
 ##Run BNAT Scan##
-Run ‘ruby bnat-scan.rb <IP/CIDR NETBLOCK>’ as root
+Run "ruby bnat-scan.rb <IP/CIDR NETBLOCK>" as root
