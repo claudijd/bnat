@@ -11,7 +11,7 @@ Add "export RUBYOPT=rubygems" to .bashrc file in home directory
 
 ##Download Scanner Code##
 
-Run "wget https://github.com/claudijd/BNAT-Suite/blob/master/bnat-scan.rb" as root
+Run "wget https://github.com/claudijd/BNAT-Suite/blob/master/bnat-scan.rb " as root
 
 ##Prevent RST’s from Breaking Connections##
 Run "iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP" as root
