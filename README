@@ -1,4 +1,21 @@
-Instructions for BNAT Scanner Setup on Ubuntu 10.04 LTS (lucid) 32-bit
+######What is BNAT?######
+
+BNAT (Broken NAT) is namely defined as IP communication that is being improperly nat'd to create an inoperable communications channel.  A common example of BNAT is found in asymmetric routing where we (intentially or unintentionally) create a logical layer 3 loop in a TCP/IP session between a client and a server. This is commonly found in complex routing scenarios or situations where mistakes are "corrected" to make something work without understanding or caring about the actual flow of traffic.
+
+Very Basic Example...
+
+.1 ----SYN----> .2 (.1 is the client and starts a session w/ a syn to .2)
+.1 <--SYN/ACK-- .3 (.3 responds to .1 with the syn/ack)
+
+######Why does BNAT matter?######
+
+BNAT effectively hides TCP ports from being identified by modern TCP clients and port scanning utilities like NMAP.  With the right tools, you can identify ports that would otherwise be considered as closed/filtered which can be converted into legitimate open ports.
+
+######How can I find BNAT?######
+
+By scanning your public IPv4 space while your scanning host is directly connected to the Internet.  Due to the nature of BNAT, scanning from behind a firewall/router/natting service can strip off parts of the return BNAT communication as it is not seen as part of the originating TCP session.
+
+######Instructions for BNAT Scanner Setup on Ubuntu 10.04 LTS (lucid) 32-bit######
 
 ##Install Requirements##
 
