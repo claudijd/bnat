@@ -15,8 +15,5 @@ Run ‘wget https://github.com/claudijd/BNAT-Suite/blob/master/bnat-scan.rb’ as ro
 Prevent RST’s from Breaking Connections
 Run ‘iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP’ as root
 
-##Ensure rubygems are included##
-Check for “require 'rubygems'” in the script
-
 ##Run BNAT Scan##
-Run ‘ruby bnat-scanv3.rb <IP/CIDR NETBLOCK>’ as root
+Run ‘ruby bnat-scan.rb <IP/CIDR NETBLOCK>’ as root
