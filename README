@@ -17,4 +17,4 @@ Run "wget https://github.com/claudijd/BNAT-Suite/blob/master/bnat-scan.rb" as ro
 Run "iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP" as root
 
 ##Run BNAT Scan##
-Run "ruby bnat-scan.rb <IP/CIDR NETBLOCK>" as root
+Run "ruby bnat-scan.rb <IP/CIDR NETBLOCK> " as root
