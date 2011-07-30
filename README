@@ -13,7 +13,7 @@ BNAT effectively hides TCP ports from being identified by modern TCP clients and
 
 ######How can I find BNAT?######
 
-By scanning your public IPv4 space while your scanning host is directly connected to the Internet.  Due to the nature of BNAT, scanning from behind a firewall/router/natting service can strip off parts of the return BNAT communication as it is not seen as part of the originating TCP session.
+By scanning your public IPv4 space while your scanning host is directly connected to the Internet.  Due to the nature of BNAT, scanning from behind a firewall/router/natting service can strip off parts of the return BNAT communication as it is not seen as part of the originating TCP session and can be used to hijack the broken session.
 
 ######Instructions for BNAT Scanner Setup on Ubuntu 10.04 LTS (lucid) 32-bit######
 
