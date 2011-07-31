@@ -11,27 +11,15 @@ Very Basic Example...
 
 BNAT effectively hides TCP ports from being identified by modern TCP clients and port scanning utilities like NMAP.  With the right tools, you can identify ports that would otherwise be considered as closed/filtered which can be converted into legitimate open ports.
 
-######How can I find BNAT?######
-
-By scanning your public IPv4 space while your scanning host is directly connected to the Internet.  Due to the nature of BNAT, scanning from behind a firewall/router/natting service can strip off parts of the return BNAT communication as it is not seen as part of the originating TCP session and can be used to hijack the broken session.
-
 ######Instructions for BNAT Scanner Setup on Ubuntu 10.04 LTS (lucid) 32-bit######
 
-##Install Requirements##
+##Prep the System##
+apt-get -y install build-essential ruby1.8-dev libpcap-dev libpcap-ruby wireshark tcpdump ruby rubygems
+gem install pcaprub packetfu netaddr
+iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP
 
-Run "apt-get install build-essential ruby1.8-dev libpcap-dev libpcap-ruby libpcap-dev libpcap-ruby wireshark tcpdump ruby rubygems" as root
-
-Run "gem install pcaprub packetfu netaddr" as root
-
-##Set Path Variables##
-Add "export RUBYOPT=rubygems" to .bashrc file in home directory
-
-##Download Scanner Code##
-
-Run "wget https://github.com/claudijd/BNAT-Suite/blob/master/bnat-scan.rb " as root
-
-##Prevent RST’s from Breaking Connections##
-Run "iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP" as root
+##Download BNAT Scan
+wget https://raw.github.com/claudijd/BNAT-Suite/master/bnat-scan.rb
 
 ##Run BNAT Scan##
-Run "ruby bnat-scan.rb <IP/CIDR NETBLOCK> " as root
+ruby bnat-scan.rb <IP/CIDR NETBLOCK>

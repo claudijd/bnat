@@ -27,7 +27,9 @@ $portarray = [22, 23, 80, 443, 445]
 puts "\nbnat-scan v0.1\n\n"
 
 def usage
-  puts "\nUsage: ruby ./bnat-scan.rb <ipaddress OR CIDR netblock>\n\n"
+  puts "\nUsage: ruby bnat-scan.rb <ipaddress OR CIDR netblock>\n\n"
+  puts "\nWARNING: do not initiate any outbound traffic while performing a scan to ensure accurate results\n\n"
+  puts "\nWARNING: your scanning host must be directly connected to the internet w/o firewall/router/nat service\n\n"
   exit
 end
 
