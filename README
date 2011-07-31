@@ -11,12 +11,21 @@ Very Basic Example...
 
 BNAT effectively hides TCP ports from being identified by modern TCP clients and port scanning utilities like NMAP.  With the right tools, you can identify ports that would otherwise be considered as closed/filtered which can be converted into legitimate open ports.
 
-######Instructions for BNAT Scanner Setup on Ubuntu 10.04 LTS (lucid) 32-bit######
+######Instructions for BNAT Scanner Setup on Ubuntu 10.04 LTS (lucid) 32-bit w/ Ruby 1.9.2-p180######
 
 ##Prep the System##
-apt-get -y install build-essential ruby1.8-dev libpcap-dev libpcap-ruby wireshark tcpdump ruby rubygems
-gem install pcaprub packetfu netaddr
-iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP
+sudo aptitude update
+sudo aptitude -y install build-essential git-core curl tcpdump libpcap-dev libpcap-ruby
+bash < <( curl https://rvm.beginrescueend.com/releases/rvm-install-head )
+echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"' >> ~/.bashrc
+#close exiting terminal, start new one
+rvm notes
+#install 'rvm notes' output of recommended apt-get packages
+#the next step might take some time, be patient
+rvm install 1.9.2-p180
+rvm 1.9.2-p180
+rvm --default use 1.9.2-p180
+rvm gem install pcaprub packetfu netaddr progressbar
 
 ##Download BNAT Scan
 wget https://raw.github.com/claudijd/BNAT-Suite/master/bnat-scan.rb

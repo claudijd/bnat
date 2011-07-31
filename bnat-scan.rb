@@ -20,11 +20,12 @@
 require 'rubygems'
 require 'packetfu'
 require 'netaddr'
+require 'progressbar'
 include PacketFu
 
 $portarray = [22, 23, 80, 443, 445]
 
-puts "\nbnat-scan v0.1\n"
+puts "\nbnat-scan v0.2\n"
 
 def usage
   puts "\nUsage: ruby bnat-scan.rb <ipaddress OR CIDR netblock>\n"
@@ -53,6 +54,8 @@ scan=Thread.new do
   tcp_pkt.tcp_flags.syn=1
   tcp_pkt.tcp_win=14600
   tcp_pkt.tcp_options="MSS:1460,SACKOK,TS:3853;0,NOP,WS:5" 
+  pbar = ProgressBar.new("#{target}", 5)
+  count = 1
   $portarray.each { |x|
     tcp_pkt.tcp_src=rand(64511)+1024
     tcp_pkt.tcp_dst=x
@@ -60,6 +63,8 @@ scan=Thread.new do
     tcp_pkt.to_w
     sleep 0.075
     tcp_pkt.to_w
+    pbar.set(count)
+    count = count + 1
   }
 end
 
@@ -95,7 +100,7 @@ cidr4 = NetAddr::CIDR.create(ARGV[0])
 puts "Scan scope has #{cidr4.size} IP's\n\n"
 start = NetAddr::CIDR.create(cidr4.first)
 fin = NetAddr::CIDR.create(cidr4.last)
-puts "Performing BNAT scan...\n\n"
+puts "Performing BNAT scan...\n"
 (start..fin).each {|addr| 
   #puts "\n"
   scanip(addr.ip)
