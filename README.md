@@ -1,34 +1,37 @@
-######What is BNAT?######
+# What is BNAT?
 
 BNAT (Broken NAT) is namely defined as IP communication that is being improperly nat'd to create an inoperable communications channel.  A common example of BNAT is found in asymmetric routing where we (intentially or unintentionally) create a logical layer 3 loop in a TCP/IP session between a client and a server. This is commonly found in complex routing scenarios or situations where mistakes are "corrected" to make something work without understanding or caring about the actual flow of traffic.
 
-Very Basic Example...
+## Very Basic Example...
 
-.1 ----SYN----> .2 (.1 is the client and starts a session w/ a syn to .2)
-.1 <--SYN/ACK-- .3 (.3 responds to .1 with the syn/ack)
-
-######Why does BNAT matter?######
+    .1 ----SYN----> .2 (.1 is the client and starts a session w/ a syn to .2)
+    .1 <--SYN/ACK-- .3 (.3 responds to .1 with the syn/ack)
+	
+# Why does BNAT matter?
 
 BNAT effectively hides TCP ports from being identified by modern TCP clients and port scanning utilities like NMAP.  With the right tools, you can identify ports that would otherwise be considered as closed/filtered which can be converted into legitimate open ports.
 
-######Instructions for BNAT Scanner Setup on Ubuntu 10.04 LTS (lucid) 32-bit w/ Ruby 1.9.2-p180######
+# Instructions for BNAT Scanner Setup on Ubuntu 10.04 LTS (lucid) 32-bit w/ Ruby 1.9.2-p180 #
 
-##Prep the System##
-sudo aptitude update
-sudo aptitude -y install build-essential git-core curl tcpdump libpcap-dev libpcap-ruby
-bash < <( curl https://rvm.beginrescueend.com/releases/rvm-install-head )
-echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"' >> ~/.bashrc
-#close exiting terminal, start new one
-rvm notes
-#install 'rvm notes' output of recommended apt-get packages
-#the next step might take some time, be patient
-rvm install 1.9.2-p180
-rvm 1.9.2-p180
-rvm --default use 1.9.2-p180
-rvm gem install pcaprub packetfu netaddr progressbar
+## Prep the System ##
 
-##Download BNAT Scan
-wget https://raw.github.com/claudijd/BNAT-Suite/master/bnat-scan.rb
+    sudo aptitude update
+    sudo aptitude -y install build-essential git-core curl tcpdump libpcap-dev libpcap-ruby
+    bash < <( curl https://rvm.beginrescueend.com/releases/rvm-install-head )
+    echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"' >> ~/.bashrc
+    #close exiting terminal, start new one
+    rvm notes
+    #install 'rvm notes' output of recommended apt-get packages
+    #the next step might take some time, be patient
+    rvm install 1.9.2-p180
+    rvm 1.9.2-p180
+    rvm --default use 1.9.2-p180
+    rvm gem install pcaprub packetfu netaddr progressbar
 
-##Run BNAT Scan##
-ruby bnat-scan.rb <IP/CIDR NETBLOCK>
+## Download BNAT Scan ## 
+
+    wget https://raw.github.com/claudijd/BNAT-Suite/master/bnat-scan.rb
+
+## Run BNAT Scan 
+
+    ruby bnat-scan.rb <IP/CIDR NETBLOCK>
