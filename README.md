@@ -38,10 +38,11 @@ BNAT-Router: http://www.youtube.com/watch?v=C8zv10VHyUg
     rvm --default use 1.9.2-p180
     rvm gem install pcaprub packetfu netaddr progressbar
 
-## Download BNAT Scan
+## Check out BNAT Scan
 
-    wget https://raw.github.com/claudijd/BNAT-Suite/master/bnat-scan.rb
-
+    git clone https://github.com/claudijd/BNAT-Suite.git
+	cd BNAT-Suite/
+	
 ## Run BNAT Scan 
-
+    
     ruby bnat-scan.rb <IP/CIDR NETBLOCK>
