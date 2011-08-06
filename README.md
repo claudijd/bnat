@@ -41,8 +41,3 @@ BNAT-Router: http://www.youtube.com/watch?v=C8zv10VHyUg
 ## Check out BNAT Scan
 
     git clone https://github.com/claudijd/BNAT-Suite.git
-	cd BNAT-Suite/
-	
-## Run BNAT Scan 
-    
-    ruby bnat-scan.rb <IP/CIDR NETBLOCK>
