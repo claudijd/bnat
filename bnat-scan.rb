@@ -44,7 +44,7 @@ synack_hash = Hash.new
 synackarray = Array.new
 
 #Start Capture for !IP
-pcap = PacketFu::Capture.new(:iface => 'eth0', :start => true, :filter => "tcp and host #{target} and tcp[13] == 18")
+pcap = PacketFu::Capture.new(:iface => 'eth0', :start => true, :filter => "tcp and not host #{target} and tcp[13] == 18")
 
 #Ruby Scan Command
 scan=Thread.new do
