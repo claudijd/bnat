@@ -21,7 +21,7 @@ BNAT-Scan: http://www.youtube.com/watch?v=8Um1cJswCeM
 
 BNAT-Router: http://www.youtube.com/watch?v=C8zv10VHyUg
 
-# BNAT-Scan Setup on Ubuntu 10.04 LTS (lucid) w/ Ruby 1.9.2-p180 #
+# Setup on Ubuntu 10.04 LTS (lucid) w/ Ruby 1.9.2-p180 #
 
 ## Prep the System ##
 
