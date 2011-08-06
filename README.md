@@ -11,6 +11,10 @@ BNAT (Broken NAT) is namely defined as IP communication that is being improperly
 
 BNAT effectively hides TCP ports from being identified by modern TCP clients and port scanning utilities like NMAP.  With the right tools, you can identify ports that would otherwise be considered as closed/filtered which can be converted into legitimate open ports.
 
+# Check out my DC Skytalk Presentation on Slideshare
+
+http://www.slideshare.net/claudijd/dc-skytalk-bnat-hijacking-repairing-broken-communication-channels
+
 # Instructions for BNAT Scanner Setup on Ubuntu 10.04 LTS (lucid) 32-bit w/ Ruby 1.9.2-p180 #
 
 ## Prep the System ##
