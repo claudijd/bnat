@@ -17,9 +17,9 @@ DEFCON Skytalks VI: http://www.slideshare.net/claudijd/dc-skytalk-bnat-hijacking
 
 # Video Demo's
 
-BNAT-Scan: http://www.youtube.com/watch?v=8Um1cJswCeM
+BNAT-Scan: http://www.youtube.com/watch?v=8Um1cJswCeM (BNAT-Scan compared to NMAP -sS Scan)
 
-BNAT-Router: http://www.youtube.com/watch?v=C8zv10VHyUg
+BNAT-Router: http://www.youtube.com/watch?v=C8zv10VHyUg (BNAT-Router handling BNAT'd SSH Session)
 
 # Setup on Ubuntu 10.04 LTS (lucid) w/ Ruby 1.9.2-p180 #
 
