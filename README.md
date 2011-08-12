@@ -21,23 +21,6 @@ BNAT-Scan: http://www.youtube.com/watch?v=8Um1cJswCeM (BNAT-Scan compared to NMA
 
 BNAT-Router: http://www.youtube.com/watch?v=C8zv10VHyUg (BNAT-Router handling BNAT'd SSH Session)
 
-# Setup on Ubuntu 10.04 LTS (lucid) w/ Ruby 1.9.2-p180 #
-
-## Prep the System ##
-
-    sudo aptitude update
-    sudo aptitude -y install build-essential git-core curl tcpdump libpcap-dev libpcap-ruby
-    bash < <( curl https://rvm.beginrescueend.com/releases/rvm-install-head )
-    echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"' >> ~/.bashrc
-    #close exiting terminal, start new one
-    rvm notes
-    #install 'rvm notes' output of recommended apt-get packages
-    #the next step might take some time, be patient
-    rvm install 1.9.2-p180
-    rvm 1.9.2-p180
-    rvm --default use 1.9.2-p180
-    rvm gem install pcaprub packetfu netaddr progressbar
-
 # Setup on BT5 w/ Ruby 1.9.2#
 
 ## Prep the System ##
