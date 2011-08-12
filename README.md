@@ -29,6 +29,6 @@ BNAT-Router: http://www.youtube.com/watch?v=C8zv10VHyUg (BNAT-Router handling BN
     cd /usr/lib/ruby/
 	ln -s /var/lib/gems gems
 	
-## Check out BNAT Scan
+## Check out BNAT-Suite
 
     git clone https://github.com/claudijd/BNAT-Suite.git
