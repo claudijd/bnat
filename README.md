@@ -13,7 +13,7 @@ BNAT effectively hides TCP ports from being identified by modern TCP clients and
 
 # Check out my Presentation
 
-DEFCON Skytalks VI: http://www.slideshare.net/claudijd/dc-skytalk-bnat-hijacking-repairing-broken-communication-channels
+DEFCON Skytalks: http://www.slideshare.net/claudijd/dc-skytalk-bnat-hijacking-repairing-broken-communication-channels
 
 # Video Demo's
 
@@ -38,6 +38,14 @@ BNAT-Router: http://www.youtube.com/watch?v=C8zv10VHyUg (BNAT-Router handling BN
     rvm --default use 1.9.2-p180
     rvm gem install pcaprub packetfu netaddr progressbar
 
+# Setup on BT5 w/ Ruby 1.9.2#
+
+## Prep the System ##
+
+    gem install pcaprub packetfu netaddr progressbar
+    cd /usr/lib/ruby/
+	ln -s /var/lib/gems gems
+	
 ## Check out BNAT Scan
 
     git clone https://github.com/claudijd/BNAT-Suite.git
