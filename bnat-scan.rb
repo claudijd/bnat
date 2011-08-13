@@ -89,7 +89,7 @@ synackarray = synackarray.uniq
 
 #Print BNAT Pairs to SYSOUT
 synackarray.each do |synack|
-  puts "[BNAT Response] Request: #{target} Response: #{synack["ip"]} Port: #{synack["port"]}"
+  puts "\n[BNAT Response] Request: #{target} Response: #{synack["ip"]} Port: #{synack["port"]}"
 end
 
 end
