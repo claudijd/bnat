@@ -21,14 +21,26 @@ BNAT-Scan: http://www.youtube.com/watch?v=8Um1cJswCeM (BNAT-Scan compared to NMA
 
 BNAT-Router: http://www.youtube.com/watch?v=C8zv10VHyUg (BNAT-Router handling BNAT'd SSH Session)
 
-# Setup on BT5 w/ Ruby 1.9.2#
+# Native Setup on BT5 w/ Ruby 1.9.2#
 
 ## Prep the System ##
 
     gem install pcaprub packetfu netaddr progressbar
     cd /usr/lib/ruby/
 	ln -s /var/lib/gems gems
+	iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP
 	
 ## Check out BNAT-Suite
 
     git clone https://github.com/claudijd/BNAT-Suite.git
+	
+# MSF Setup on BT5 w/ Ruby 1.9.2#
+
+## Prep the System ##
+
+	iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP
+	
+## Check out BNAT-Suite
+
+    cd /pentest/exploits/framework3/
+	svn update
