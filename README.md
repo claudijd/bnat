@@ -21,7 +21,7 @@ BNAT-Scan: http://www.youtube.com/watch?v=8Um1cJswCeM (BNAT-Scan compared to NMA
 
 BNAT-Router: http://www.youtube.com/watch?v=C8zv10VHyUg (BNAT-Router handling BNAT'd SSH Session)
 
-# Native Setup on BT5 w/ Ruby 1.9.2#
+# Native Setup on BT5#
 
 ## Prep the System ##
 
@@ -34,7 +34,7 @@ BNAT-Router: http://www.youtube.com/watch?v=C8zv10VHyUg (BNAT-Router handling BN
 
     git clone https://github.com/claudijd/BNAT-Suite.git
 	
-# MSF Setup on BT5 w/ Ruby 1.9.2#
+# MSF Setup on BT5#
 
 ## Prep the System ##
 
