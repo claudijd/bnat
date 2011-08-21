@@ -134,7 +134,7 @@ fromin=Thread.new do
       inj = PacketFu::Inject.new( :iface => "#{outint}", :config =>outconfig )
       inj.a2w(:array => [packet.to_s])
       
-      #Trigger Cisco SPI Vulnerability by Double-tapping the SYN
+      #Double tap that SYN
       if packet.tcp_flags.syn == 1 && packet.tcp_flags.ack == 0
         sleep 0.75
         inj.a2w(:array => [packet.to_s])
