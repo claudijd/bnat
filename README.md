@@ -21,6 +21,8 @@ BNAT-Scan: http://www.youtube.com/watch?v=8Um1cJswCeM (BNAT-Scan compared to NMA
 
 BNAT-Router: http://www.youtube.com/watch?v=C8zv10VHyUg (BNAT-Router handling BNAT'd SSH Session)
 
+BNAT in Metasploit: http://www.youtube.com/watch?v=FS_cg1PVhkI (Using BNAT msf auxmod's to exploit Tomcat)
+
 # Native Setup on BT5#
 
 ## Prep the System ##
