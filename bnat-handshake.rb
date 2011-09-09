@@ -43,7 +43,7 @@ synpkt.tcp_flags.syn=1
 synpkt.recalc
 
 #Start capture
-cap = PacketFu::Capture.new(:iface => $config[:iface], :start => true, :filter => "tcp and src #{$target} and dst #{$config[:ip_saddr]} and tcp[13] == 18")
+cap = PacketFu::Capture.new(:iface => $config[:iface], :start => true, :filter => "tcp and dst #{$config[:ip_saddr]} and tcp[13] == 18")
 
 #push syn to wire
 synpkt.to_w
