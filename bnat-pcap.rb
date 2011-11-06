@@ -42,13 +42,20 @@ puts "\nParsing SYN/ACK data from PCAP..."
 system("tcpdump -nn -r #{sample} -w ./synack.pcap tcp[13] == 18")
 puts "Parsed SYN/ACK data from PCAP in #{Time.now - beginning} seconds"
 
-pcap = PcapFile.new.f2a( :f => "./synack.pcap", :filter => "tcp and tcp[13] == 18")
+pcap = PcapFile.new.f2a(
+  :f => "./synack.pcap",
+  :filter => "tcp and tcp[13] == 18"
+)
 
 puts "SYN/ACK PCAP Load time was #{Time.now - beginning} seconds"
 
 pcap.each do |pkt|
   packet = PacketFu::Packet.parse(pkt)
-  synack_hash = { "ip" => packet.ip_saddr.to_s, "port" => packet.tcp_sport.to_s, "seq" => packet.tcp_ack.to_s}
+  synack_hash = {
+    "ip" => packet.ip_saddr.to_s,
+    "port" => packet.tcp_sport.to_s,
+    "seq" => packet.tcp_ack.to_s
+  }
   synackarray.push(synack_hash)
 end
 
@@ -81,9 +88,11 @@ puts "SYN PCAP Load time was #{Time.now - beginning} seconds"
 
 pcap2.each do |pkt|
   packet = PacketFu::Packet.parse(pkt)
-  syn_hash = { "ip" => packet.ip_daddr.to_s, "port" => packet.tcp_dport.to_s, "seq" => packet.tcp_seq.to_s}
+  syn_hash = {
+    "ip" => packet.ip_daddr.to_s,
+    "port" => packet.tcp_dport.to_s,
+    "seq" => packet.tcp_seq.to_s}
   synarray.push(syn_hash)
-  #puts "[+]SYN:\t\t"+packet.ip_daddr.to_s+"\t"+packet.tcp_dport.to_s+"\t"+packet.tcp_seq.to_s
 end
 
 puts "SYN PCAP Process time was #{Time.now - beginning} seconds\n\n"
