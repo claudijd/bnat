@@ -19,6 +19,7 @@
 require 'rubygems'
 require 'packetfu'
 require 'netaddr'
+require 'progressbar'
 
 #Set specific port we are going scan for
 port = 80
@@ -97,9 +98,11 @@ start_time = Time.now.utc
 puts "Scan start time: #{start_time}"
 
 #Scan Each Range
-ranges.each do |range|
-  scanrange(range)  
-end
+pbar = ProgressBar.new("Scan Progress:", ranges.size)
+ranges.each_with_index {|range,i|
+  pbar.set(i+1)
+  scanrange(range)
+}
 
 #Mark Scan Completion and Run Time in Seconds
 puts "\nBNAT Scanned #{$ips} IPs in #{Time.now - start_time}s"
