@@ -104,7 +104,10 @@ synackarray.each do |synackpacket|
     temp = synpacket["seq"]
     temp2 = temp.to_i
     seq = temp2+1
-    if synackpacket["ip"] != synpacket["ip"] and synackpacket["port"] == synpacket["port"] and synackpacket["seq"] == seq.to_s
+    if synackpacket["ip"] != synpacket["ip"] and
+      synackpacket["port"] == synpacket["port"] and
+      synackpacket["seq"] == seq.to_s
+      
       puts "[+]BNAT DETECTED:\t Requested:"+synpacket["ip"]+":"+synpacket["port"]+"\t Responded:"+synackpacket["ip"]+":"+synackpacket["port"]+"\tSession:"+seq.to_s
     end
   end

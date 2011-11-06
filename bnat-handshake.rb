@@ -57,27 +57,27 @@ puts "sent the syn"
 
 listen=Thread.new do
 loop {cap.stream.each {|pkt| packet = PacketFu::Packet.parse(pkt)
-      puts "got the syn/ack"
-      ackpkt = PacketFu::TCPPacket.new(
-        :config=>$config,
-        :timeout=> 0.1,
-        :flavor=>"Windows"
-      )
-      ackpkt.ip_saddr=packet.ip_daddr
-      ackpkt.ip_daddr=packet.ip_saddr
-      ackpkt.eth_saddr=packet.eth_daddr
-      ackpkt.eth_daddr=packet.eth_saddr
-      ackpkt.tcp_sport=packet.tcp_dport
-      ackpkt.tcp_dport=packet.tcp_sport
-      ackpkt.tcp_flags.syn=0
-      ackpkt.tcp_flags.ack=1
-      ackpkt.tcp_ack=packet.tcp_seq+1
-      ackpkt.tcp_seq=packet.tcp_ack
-      ackpkt.tcp_win=183
-      ackpkt.recalc
-      ackpkt.to_w
-      puts "sent the ack"
-   }
+    puts "got the syn/ack"
+    ackpkt = PacketFu::TCPPacket.new(
+      :config=>$config,
+      :timeout=> 0.1,
+      :flavor=>"Windows"
+    )
+    ackpkt.ip_saddr=packet.ip_daddr
+    ackpkt.ip_daddr=packet.ip_saddr
+    ackpkt.eth_saddr=packet.eth_daddr
+    ackpkt.eth_daddr=packet.eth_saddr
+    ackpkt.tcp_sport=packet.tcp_dport
+    ackpkt.tcp_dport=packet.tcp_sport
+    ackpkt.tcp_flags.syn=0
+    ackpkt.tcp_flags.ack=1
+    ackpkt.tcp_ack=packet.tcp_seq+1
+    ackpkt.tcp_seq=packet.tcp_ack
+    ackpkt.tcp_win=183
+    ackpkt.recalc
+    ackpkt.to_w
+    puts "sent the ack"
+  }
 }
 end
 

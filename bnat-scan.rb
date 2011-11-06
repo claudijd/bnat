@@ -67,7 +67,8 @@ def scanip(target)
   pcap = PacketFu::Capture.new(
     :iface => $config[:iface],
     :start => true,
-    :filter => "tcp and not host #{target} and tcp[13] == 18")
+    :filter => "tcp and not host #{target} and tcp[13] == 18"
+  )
   
   #Ruby Scan Command
   scan=Thread.new do

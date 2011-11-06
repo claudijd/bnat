@@ -138,7 +138,9 @@ fromin=Thread.new do
     inpcap.stream.each {
       |pkt| packet = PacketFu::Packet.parse(pkt)
    
-      if packet.tcp_flags.syn == 1 && packet.tcp_flags.ack == 0
+      if packet.tcp_flags.syn == 1 and
+        packet.tcp_flags.ack == 0
+        
         packet.ip_daddr=serverip
         packet.eth_daddr=servermac
       else
@@ -146,19 +148,29 @@ fromin=Thread.new do
         packet.eth_daddr=bnatmac
       end
       
-      #Build a shell packet that will never hit the wire as a hack to get desired mac's
-      shell_pkt = PacketFu::TCPPacket.new(:config=>outconfig, :timeout=> 0.1, :flavor=>"Windows")
+      #Build a shell packet that will never hit the
+      #wire as a hack to get desired mac's
+      shell_pkt = PacketFu::TCPPacket.new(
+        :config=>outconfig,
+        :timeout=> 0.1,
+        :flavor=>"Windows"
+      )
       shell_pkt.ip_daddr=serverip
       shell_pkt.recalc
 
       #Mangle Received Packet and Drop on the Wire
       packet.eth_saddr=shell_pkt.eth_saddr
       packet.recalc
-      inj = PacketFu::Inject.new( :iface => "#{outint}", :config =>outconfig )
+      inj = PacketFu::Inject.new(
+        :iface => "#{outint}",
+        :config =>outconfig
+      )
       inj.a2w(:array => [packet.to_s])
       
       #Double tap that SYN
-      if packet.tcp_flags.syn == 1 && packet.tcp_flags.ack == 0
+      if packet.tcp_flags.syn == 1 and
+        packet.tcp_flags.ack == 0
+        
         sleep 0.75
         inj.a2w(:array => [packet.to_s])
       end
