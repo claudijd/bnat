@@ -32,7 +32,6 @@ puts "\nbnat-scan v0.3\n"
 
 def usage
   puts "\nUsage: ruby bnat-scan.rb <ipaddress OR CIDR netblock>\n"
-  puts "\nWARNING: do not initiate any outbound traffic while performing a scan to ensure accurate results\n"
   puts "\nWARNING: your scanning host must be directly connected to the Internet w/o firewall/router/nat service\n\n"
   exit
 end
@@ -80,7 +79,7 @@ def scanip(target)
       :iface => $config[:iface],
       :start => true,
       #Prod Filter (bnat ports)
-      :filter => "tcp and not host #{target} and tcp[13] == 18 and #{seqbpf}"
+      :filter => "tcp and not host #{target} and tcp[13] == 18 and #{bpf}"
       #Debug Filter (open ports)
       #:filter => "tcp and host #{target} and tcp[13] == 18 and #{bpf}"
     )
@@ -148,8 +147,10 @@ pbar = ProgressBar.new("Scan Progress:", cidr4.size)
 puts "\nCompleted BNAT scan\n"
 puts "\nWe found #{$bnatarray.length} instance(s) of BNAT\n"
 
-$bnatarray.each do |b|
-  puts "#{b}\n"
+if $bnatarray != nil
+  $bnatarray.each do |b|
+    puts "#{b}\n"
+  end
 end
 
 puts "\n"
