@@ -6,7 +6,7 @@ BNAT (Broken NAT) is namely defined as IP communication that is being improperly
 
     .1 ----SYN-----> .2 (.1 is the client and starts a session w/ a syn to .2)
     .1 <--SYN/ACK--- .3 (.3 responds to .1 with the syn/ack)
-    .1 ---RST--> .3 (.1 responds to .3 with a RST)
+    .1 ----RST-----> .3 (.1 responds to .3 with a RST)
 	
 # Why does BNAT matter?
 
