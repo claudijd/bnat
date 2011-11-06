@@ -91,14 +91,18 @@ def scanrange(range)
 end
 
 #Load Ranges From File
-ranges = File.new(ARGV[0],"r")
+ranges = []
+range_file = File.new(ARGV[0],"r")
+range_file.each {|range|
+  ranges << range
+}
 
 #Mark Start Scan Time
 start_time = Time.now.utc
 puts "Scan start time: #{start_time}"
 
 #Scan Each Range
-pbar = ProgressBar.new("Scan Progress:", ranges.size)
+pbar = ProgressBar.new("Scan Progress:", ranges.length)
 ranges.each_with_index {|range,i|
   pbar.set(i+1)
   scanrange(range)
