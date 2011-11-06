@@ -9,18 +9,18 @@
 #You should have received a copy of the GNU General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 require 'packetfu'
-include PacketFu
 
-$int = ARGV[0]
-$target = ARGV[1]
-$port = ARGV[2]
-$gatewaymac= ARGV[3]
+$target = ARGV[0]
+$port = ARGV[1]
+$gatewaymac= ARGV[2]
 
-#usage: ruby bnat-handshake.rb <interface> <targetip> <port> <yourgatewaymac>
-#example: ruby bnat-handshake.rb eth1 74.125.159.27 25 ab:cd:ef:01:02:03
+#usage: ruby bnat-handshake.rb <targetip> <port>
+#example: ruby bnat-handshake.rb 74.125.225.84 80
 
-$config = PacketFu::Utils.whoami?(:iface=>"#{$int}")
+#Get our local int config
+$config = PacketFu::Utils.whoami?()
 
+#Build out a Raw TCP Packet
 synpkt = PacketFu::TCPPacket.new(:config=>$config, :timeout=> 0.1, :flavor=>"Windows")
 synpkt.ip_saddr=$config[:ip_saddr]
 synpkt.ip_daddr="#{$target}"
@@ -28,7 +28,6 @@ synpkt.tcp_sport=rand(64511)+1024
 synpkt.tcp_dport=$port.to_i
 synpkt.tcp_win=14600
 synpkt.tcp_options="MSS:1460,SACKOK,TS:3853;0,NOP,WS:5"
-synpkt.eth_saddr=$config[:eth_saddr]
 synpkt.eth_daddr=$gatewaymac
 synpkt.tcp_flags.syn=1
 synpkt.recalc
@@ -43,7 +42,7 @@ puts "sent the syn"
 listen=Thread.new do
 loop {cap.stream.each {|pkt| packet = PacketFu::Packet.parse(pkt)
       puts "got the syn/ack"
-      ackpkt = TCPPacket.new(:config=>$config, :timeout=> 0.1, :flavor=>"Windows")
+      ackpkt = PacketFu::TCPPacket.new(:config=>$config, :timeout=> 0.1, :flavor=>"Windows")
       ackpkt.ip_saddr=packet.ip_daddr
       ackpkt.ip_daddr=packet.ip_saddr
       ackpkt.eth_saddr=packet.eth_daddr
