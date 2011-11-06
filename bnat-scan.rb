@@ -34,8 +34,9 @@ if ARGV.length != 1
 end
 
 #Get the things set that we don't wantch to touch during run time
-config = PacketFu::Utils.whoami?(:iface=>"eth0")
-$tcp_pkt = PacketFu::TCPPacket.new(:config=>config, :timeout=> 0.1, :flavor=>"Windows")
+$config = PacketFu::Utils.whoami?()
+#$config = PacketFu::Utils.whoami?() #use this if you want an explicit scan interface
+$tcp_pkt = PacketFu::TCPPacket.new(:config=> $config, :timeout=> 0.1, :flavor=>"Windows")
 $tcp_pkt.tcp_flags.syn=1
 $tcp_pkt.tcp_win=14600
 $tcp_pkt.tcp_options="MSS:1460,SACKOK,TS:3853;0,NOP,WS:5"
@@ -50,7 +51,8 @@ def scanip(target)
   synackarray = Array.new
   
   #Start Capture for !IP
-  pcap = PacketFu::Capture.new(:iface => 'eth0', :start => true, :filter => "tcp and not host #{target} and tcp[13] == 18")
+  pcap = PacketFu::Capture.new(:iface => $config[:iface], :start => true, :filter => "tcp and not host #{target} and tcp[13] == 18")
+  #pcap = PacketFu::Capture.new(:iface => 'eth0', :start => true, :filter => "tcp and host #{target} and tcp[13] == 18") #debug purposes only
   
   #Ruby Scan Command
   scan=Thread.new do
