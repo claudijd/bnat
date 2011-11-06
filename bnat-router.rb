@@ -10,7 +10,6 @@
 
 require 'rubygems'
 require 'packetfu'
-include PacketFu
 
 puts "\nbnat-router v0.1\n\n"
 

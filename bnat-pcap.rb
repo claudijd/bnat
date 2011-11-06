@@ -10,7 +10,6 @@
 
 require 'rubygems'
 require 'packetfu'
-include PacketFu
 
 synack_hash = Hash.new
 synackarray = Array.new
