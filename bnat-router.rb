@@ -27,12 +27,6 @@ clientip = ARGV[1]
 serverip = ARGV[3]
 bnatip = ARGV[4]
 
-##puts "inint #{inint}"
-##puts "outint #{outint}"
-##puts "bnatip #{bnatip}"
-##puts "clientip #{clientip}"
-##puts "serverip #{serverip}"
-
 def usage
   puts "\nUsage: ruby bnat-router.rb <insideint> <clientip> <outsideint> <serverip> <bnatip>"
   puts "Example: ruby bnat-router.rb eth1 192.168.3.2 eth0 1.1.2.1 1.1.2.2\n\n"
