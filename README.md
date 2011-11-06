@@ -29,8 +29,6 @@ BNAT in Metasploit: http://www.youtube.com/watch?v=FS_cg1PVhkI (Using BNAT msf a
 ## Prep the System ##
 
     gem install pcaprub packetfu netaddr progressbar
-    cd /usr/lib/ruby/
-    ln -s /var/lib/gems gems
     iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP
 	
 ## Check out BNAT-Suite
