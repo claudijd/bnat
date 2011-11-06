@@ -1,12 +1,20 @@
-#bnat-scan-fast - A tool to generate an extremely high rate of syn traffic in conjunction with a separate packet capture to find bnat instances
+#bnat-scan-fast - A tool to generate an extremely high rate of syn traffic in
+#  conjunction with a separate packet capture to find bnat instances
+#
 #Jonathan Claudius
 #Copyright (C) 2011 Trustwave
 #
-#This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+#This program is free software: you can redistribute it and/or modify it under
+#the terms of the GNU General Public License as published by the Free Software
+#Foundation, either version 3 of the License, or (at your option) any later
+#version.
 #
-#This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#This program is distributed in the hope that it will be useful, but WITHOUT
+#ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+#FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-#You should have received a copy of the GNU General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
+#You should have received a copy of the GNU General Public License along with
+#this program. If not, see <http://www.gnu.org/licenses/>.
 
 require 'rubygems'
 require 'packetfu'
@@ -32,8 +40,13 @@ end
 
 #Get the things set that we don't wantch to touch during run time
 config = PacketFu::Utils.whoami?()
-#config = PacketFu::Utils.whoami?(:iface=>"eth0") #use this if you want an explicit scan interface
-$tcp_pkt = PacketFu::TCPPacket.new(:config=>config, :timeout=> 0.1, :flavor=>"Windows")
+#use this if you want an explicit scan interface
+#config = PacketFu::Utils.whoami?(:iface=>"eth0") 
+$tcp_pkt = PacketFu::TCPPacket.new(
+  :config=>config,
+  :timeout=> 0.1,
+  :flavor=>"Windows"
+)
 $tcp_pkt.tcp_flags.syn=1
 $tcp_pkt.tcp_win=14600
 $tcp_pkt.tcp_options="MSS:1460,SACKOK,TS:3853;0,NOP,WS:5" 

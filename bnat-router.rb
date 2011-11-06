@@ -1,12 +1,20 @@
-#bnat-router - A tool to actively hijack TCP-based BNAT identified by bnat-scan/bnat-pcap
+#bnat-router - A tool to actively hijack TCP-based BNAT identified by
+#  bnat-scan/bnat-pcap
+#
 #Jonathan Claudius
 #Copyright (C) 2011 Trustwave
 #
-#This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+#This program is free software: you can redistribute it and/or modify it under
+#the terms of the GNU General Public License as published by the Free Software
+#Foundation, either version 3 of the License, or (at your option) any later
+#version.
 #
-#This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#This program is distributed in the hope that it will be useful, but WITHOUT
+#ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+#FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-#You should have received a copy of the GNU General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
+#You should have received a copy of the GNU General Public License along with
+#this program. If not, see <http://www.gnu.org/licenses/>.
 
 require 'rubygems'
 require 'packetfu'
@@ -43,9 +51,17 @@ def arp(target_ip,int)
   arp_pkt.arp_daddr_mac = "00:00:00:00:00:00"
   arp_pkt.arp_saddr_ip = $config[:ip_saddr]
   arp_pkt.arp_daddr_ip = target_ip
-  cap = PacketFu::Capture.new(:iface => $config[:iface], :start => true, :filter => "arp src #{target_ip} and ether dst #{arp_pkt.eth_saddr}")
-  injarp = PacketFu::Inject.new(:iface => $config[:iface])
-  injarp.a2w(:array => [arp_pkt.to_s])
+  cap = PacketFu::Capture.new(
+    :iface => $config[:iface],
+    :start => true,
+    :filter => "arp src #{target_ip} and ether dst #{arp_pkt.eth_saddr}"
+  )
+  injarp = PacketFu::Inject.new(
+    :iface => $config[:iface]
+  )
+  injarp.a2w(
+    :array => [arp_pkt.to_s]
+  )
   target_mac = nil
   while target_mac.nil?
     if cap.save > 0
@@ -70,9 +86,17 @@ outconfig = PacketFu::Config.new(PacketFu::Utils.ifconfig ":#{outint}").config
 inconfig = PacketFu::Config.new(PacketFu::Utils.ifconfig ":#{inint}").config
 
 #Set Captures for Traffic coming from Outside and from Inside respectively
-outpcap = PacketFu::Capture.new( :config => "#{outint}", :start => true, :filter => "tcp and src #{bnatip}" )
+outpcap = PacketFu::Capture.new(
+  :config => "#{outint}",
+  :start => true,
+  :filter => "tcp and src #{bnatip}"
+)
 puts "Now listening on #{outint}..."
-inpcap = PacketFu::Capture.new( :iface => "#{inint}", :start => true, :filter => "tcp and src #{clientip} and dst #{serverip}" )
+inpcap = PacketFu::Capture.new(
+  :iface => "#{inint}",
+  :start => true,
+  :filter => "tcp and src #{clientip} and dst #{serverip}"
+)
 puts "Now listening on #{inint}...\n\n"
 
 #Start Thread from Outside Processing
@@ -81,8 +105,12 @@ fromout=Thread.new do
     outpcap.stream.each {
       |pkt| packet = PacketFu::Packet.parse(pkt)
  
-      #Build a shell packet that will never hit the wire as a hack to get desired mac's
-      shell_pkt = PacketFu::TCPPacket.new(:config=>inconfig, :timeout=> 0.1, :flavor=>"Windows")
+      #Build a shell packet that will never hit the wire as a hack
+      shell_pkt = PacketFu::TCPPacket.new(
+        :config=>inconfig,
+        :timeout=> 0.1,
+        :flavor=>"Windows"
+      )
       shell_pkt.ip_daddr=clientip
       shell_pkt.recalc
 
@@ -92,8 +120,13 @@ fromout=Thread.new do
       packet.eth_saddr=shell_pkt.eth_saddr
       packet.eth_daddr=clientmac
       packet.recalc
-      inj = PacketFu::Inject.new( :iface => "#{inint}", :config =>inconfig )
-      inj.a2w(:array => [packet.to_s])
+      inj = PacketFu::Inject.new(
+        :iface => "#{inint}",
+        :config =>inconfig
+      )
+      inj.a2w(
+        :array => [packet.to_s]
+      )
       puts "inpacket processed"
     }
   }

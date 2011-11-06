@@ -1,12 +1,21 @@
-#bnat-scan - A tool to actively detect BNAT by scanning a single IP or CIDR netblock
+#bnat-scan - A tool to actively detect BNAT by scanning a single IP or CIDR
+#  netblock
+#
 #Jonathan Claudius
 #Copyright (C) 2011 Trustwave
 #
-#This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+#This program is free software: you can redistribute it and/or modify it under
+#the terms of the GNU General Public License as published by the Free Software
+#Foundation, either version 3 of the License, or (at your option) any later
+#version.
 #
-#This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#This program is distributed in the hope that it will be useful, but WITHOUT
+#ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+#FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-#You should have received a copy of the GNU General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
+#You should have received a copy of the GNU General Public License along with
+#this program. If not, see <http://www.gnu.org/licenses/>.
+
 
 require 'rubygems'
 require 'packetfu'
@@ -35,8 +44,12 @@ end
 
 #Get the things set that we don't wantch to touch during run time
 $config = PacketFu::Utils.whoami?()
-#config = PacketFu::Utils.whoami?(:iface=>"eth0") #use this if you want an explicit scan interface
-$tcp_pkt = PacketFu::TCPPacket.new(:config=> $config, :timeout=> 0.1, :flavor=>"Windows")
+#use this if you want an explicit scan interface
+#config = PacketFu::Utils.whoami?(:iface=>"eth0") 
+$tcp_pkt = PacketFu::TCPPacket.new(
+  :config=> $config,
+  :timeout=> 0.1,
+  :flavor=>"Windows")
 $tcp_pkt.tcp_flags.syn=1
 $tcp_pkt.tcp_win=14600
 $tcp_pkt.tcp_options="MSS:1460,SACKOK,TS:3853;0,NOP,WS:5"
@@ -51,7 +64,10 @@ def scanip(target)
   synackarray = Array.new
   
   #Start Capture for !IP
-  pcap = PacketFu::Capture.new(:iface => $config[:iface], :start => true, :filter => "tcp and not host #{target} and tcp[13] == 18")
+  pcap = PacketFu::Capture.new(
+    :iface => $config[:iface],
+    :start => true,
+    :filter => "tcp and not host #{target} and tcp[13] == 18")
   
   #Ruby Scan Command
   scan=Thread.new do
@@ -80,7 +96,10 @@ def scanip(target)
       pcap.stream.each {
 	|pkt| packet = PacketFu::Packet.parse(pkt)
 	  #For every packet we see we load it into a array of hashes
-	  synack_hash = { "ip" => packet.ip_saddr.to_s, "port" => packet.tcp_sport.to_s}
+	  synack_hash = {
+	    "ip" => packet.ip_saddr.to_s,
+	    "port" => packet.tcp_sport.to_s
+	  }
 	  synackarray.push(synack_hash)
       }  
     }
