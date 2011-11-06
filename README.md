@@ -1,11 +1,12 @@
 # What is BNAT?
 
-BNAT (Broken NAT) is namely defined as IP communication that is being improperly nat'd to create an inoperable communications channel.  A common example of BNAT is found in asymmetric routing where we (intentially or unintentionally) create a logical layer 3 loop in a TCP/IP session between a client and a server. This is commonly found in complex routing scenarios or situations where mistakes are "corrected" to make something work without understanding or caring about the actual flow of traffic.
+BNAT (Broken NAT) is namely defined as IP communication that is being improperly nat'd to create an inoperable communication channel.  A common example of BNAT is found in asymmetric routing where we (intentionally or unintentionally) create a logical layer 3 loop in a TCP/IP session between a client and a server. This is commonly found in complex routing scenarios or situations where mistakes are "corrected" to make something work without understanding or caring about the actual flow of traffic.
 
 ## Very Basic Example...
 
-    .1 ----SYN----> .2 (.1 is the client and starts a session w/ a syn to .2)
-    .1 <--SYN/ACK-- .3 (.3 responds to .1 with the syn/ack)
+    .1 ----SYN-----> .2 (.1 is the client and starts a session w/ a syn to .2)
+    .1 <--SYN/ACK--- .3 (.3 responds to .1 with the syn/ack)
+    .1 ---RST--> .3 (.1 responds to .3 with a RST)
 	
 # Why does BNAT matter?
 
@@ -29,8 +30,8 @@ BNAT in Metasploit: http://www.youtube.com/watch?v=FS_cg1PVhkI (Using BNAT msf a
 
     gem install pcaprub packetfu netaddr progressbar
     cd /usr/lib/ruby/
-	ln -s /var/lib/gems gems
-	iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP
+    ln -s /var/lib/gems gems
+    iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP
 	
 ## Check out BNAT-Suite
 
@@ -40,9 +41,9 @@ BNAT in Metasploit: http://www.youtube.com/watch?v=FS_cg1PVhkI (Using BNAT msf a
 
 ## Prep the System ##
 
-	iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP
-	
+    iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP
+
 ## Check out BNAT-Suite
 
     cd /pentest/exploits/framework3/
-	svn update
+    svn update
