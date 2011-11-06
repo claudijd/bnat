@@ -1,4 +1,4 @@
-#bnat-scan-fast - A tool to generate an extremely high rate of syn traffic in conjunction with a packet capture to find bnat instances
+#bnat-scan-fast - A tool to generate an extremely high rate of syn traffic in conjunction with a separate packet capture to find bnat instances
 #Jonathan Claudius
 #Copyright (C) 2011 Trustwave
 #
@@ -12,14 +12,11 @@ require 'rubygems'
 require 'packetfu'
 require 'netaddr'
 
-#Set specific port we are going to beat up
+#Set specific port we are going scan for
 port = 80
 
 #Spit version
 puts "\nbnat-scan-fast v0.1\n"
-
-#Apology ;)
-puts "\nSorry no real-time output, we don't want to slow the scan\n"
 
 #Spit usage
 def usage
@@ -45,6 +42,7 @@ $tcp_pkt.tcp_dst=port
 #Keep Track of the number of IP's we scan
 $ips = 0
 
+#Scan a Single IP
 def scanip(target)
   #Set Target IP
   $tcp_pkt.ip_daddr=target
@@ -58,6 +56,7 @@ def scanip(target)
   end
 end
 
+#Scan a CIDR Range
 def scanrange(range)
   #Clean off garbage characters from the file
   range.gsub!("\s","")
@@ -82,7 +81,7 @@ ranges = File.new(ARGV[0],"r")
 
 #Mark Start Scan Time
 start_time = Time.now.utc
-puts "Scan start time: {start_time}"
+puts "Scan start time: #{start_time}"
 
 #Scan Each Range
 ranges.each do |range|
