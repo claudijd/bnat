@@ -24,6 +24,20 @@ BNAT-Router: http://www.youtube.com/watch?v=C8zv10VHyUg (BNAT-Router handling BN
 
 BNAT in Metasploit: http://www.youtube.com/watch?v=FS_cg1PVhkI (Using BNAT msf auxmod's to exploit Tomcat)
 
+# Blog Posts
+
+Metasploit Blog - A Tale From Defcon and the Fun of BNAT
+
+https://community.rapid7.com/community/metasploit/blog/2011/08/26/a-tale-from-defcon-and-the-fun-of-bnat
+
+Spiderlabs Blog - Advanced BNAT in the Wild
+
+http://blog.spiderlabs.com/2011/09/advanced-bnat-broken-network-address-translation-in-the-wild.html
+
+Phocean Blog - BNAT
+
+http://www.phocean.net/2011/09/13/bnat.html
+
 # Native Setup on BT5#
 
 ## Prep the System ##
