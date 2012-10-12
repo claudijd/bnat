@@ -56,7 +56,7 @@ synpkt.to_w
 puts "sent the syn"
 
 listen=Thread.new do
-loop {cap.stream.each {|pkt| synackpkt = PacketFu::Packet.parse(pkt)
+  loop {cap.stream.each {|pkt| synackpkt = PacketFu::Packet.parse(pkt)
     puts "got the syn/ack"
     ackpkt = PacketFu::TCPPacket.new(
       :config=>$config,
@@ -78,7 +78,7 @@ loop {cap.stream.each {|pkt| synackpkt = PacketFu::Packet.parse(pkt)
     ackpkt.to_w
     puts "sent the ack"
   }
-}
+  }
 end
 
 listen.join

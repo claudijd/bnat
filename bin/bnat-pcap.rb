@@ -140,32 +140,32 @@ synackarray.each do |synackpacket|
     temp = synpacket["seq"]
     temp2 = temp.to_i
     tempseq = temp2+1
-    
+
     ip, dport, sport, seq = false, false, false, false
-    
+
     ip = true if synackpacket["ip"] == synpacket["ip"]
     dport = true if synackpacket["dport"] == synpacket["sport"]
     sport = true if synackpacket["sport"] == synpacket["dport"]
     seq = true if synackpacket["seq"] == tempseq.to_s
-    
+
     if !ip and dport and sport and seq
       puts "IP Based BNAT Detected:"
       puts "Request:  #{synpacket}"
       puts "Response: #{synackpacket}"
     end
-    
+
     if ip and dport and !sport and seq
       puts "Source Port Based BNAT Detected:"
       puts "Request:  #{synpacket}"
       puts "Response: #{synackpacket}"
     end
-    
+
     if ip and dport and sport and !seq
       puts "Sequence Number Based BNAT Detected:"
       puts "Request:  #{synpacket}"
       puts "Response: #{synackpacket}"
     end
-    
+
     if !ip and dport and !sport and seq
       puts "IP and Source Port Based BNAT Detected:"
       puts "Request:  #{synpacket}"

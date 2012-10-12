@@ -95,10 +95,10 @@ puts "Now listening on #{inint}...\n\n"
 
 #Start Thread from Outside Processing
 fromout=Thread.new do
-  loop {
-    outpcap.stream.each {
-      |pkt| packet = PacketFu::Packet.parse(pkt)
- 
+  loop do
+    outpcap.stream.each do |pkt| 
+      packet = PacketFu::Packet.parse(pkt)
+
       #Build a shell packet that will never hit the wire as a hack
       shell_pkt = PacketFu::TCPPacket.new(
         :config=>inconfig,
@@ -122,26 +122,26 @@ fromout=Thread.new do
         :array => [packet.to_s]
       )
       puts "inpacket processed"
-    }
-  }
+    end
+  end
 end
 
 #Start Thread from Inside Processing
 fromin=Thread.new do
-  loop {
-    inpcap.stream.each {
-      |pkt| packet = PacketFu::Packet.parse(pkt)
-   
+  loop do
+    inpcap.stream.each do |pkt| 
+      packet = PacketFu::Packet.parse(pkt)
+
       if packet.tcp_flags.syn == 1 and
         packet.tcp_flags.ack == 0
-        
+
         packet.ip_daddr=serverip
         packet.eth_daddr=servermac
       else
         packet.ip_daddr=bnatip
         packet.eth_daddr=bnatmac
       end
-      
+
       #Build a shell packet that will never hit the
       #wire as a hack to get desired mac's
       shell_pkt = PacketFu::TCPPacket.new(
@@ -160,18 +160,18 @@ fromin=Thread.new do
         :config =>outconfig
       )
       inj.a2w(:array => [packet.to_s])
-      
+
       #Double tap that SYN
       if packet.tcp_flags.syn == 1 and
         packet.tcp_flags.ack == 0
-        
+
         sleep 0.75
         inj.a2w(:array => [packet.to_s])
       end
 
       puts "outpacket processed"
-    }
-  }
+    end
+  end
 end
 
 #Hold Process Open

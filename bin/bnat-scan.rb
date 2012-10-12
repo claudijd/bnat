@@ -47,82 +47,83 @@ $config = PacketFu::Utils.whoami?()
 $tcp_pkt = PacketFu::TCPPacket.new(
   :config=> $config,
   :timeout=> 0.1,
-  :flavor=>"Windows")
+  :flavor=>"Windows"
+)
+
 $tcp_pkt.tcp_flags.syn=1
 $tcp_pkt.tcp_win=14600
 $tcp_pkt.tcp_options="MSS:1460,SACKOK,TS:3853;0,NOP,WS:5"
 
 def scanip(target)
-  
+
   #Set target IP on packet object
   $tcp_pkt.ip_daddr=target
-  
+
   #Scan each port an atomic unit
-  $portarray.each { |port|
-    
+  $portarray.each do |port|
+
     #Set Destination Port
     $tcp_pkt.tcp_dst=port
-    
+
     #Stand up some hash/arrays for tracking purposes
     synack_hash = Hash.new
     synack_array = Array.new
-      
+
     #Don't trust OS to randomize source/seq
     $tcp_pkt.tcp_src=rand(64511)+1024
     $tcp_pkt.tcp_seq=rand(64511)+1024
-    
+
     #Create a BPF eq to responding seq ack for capturing
     bpf = "tcp [8:4] == 0x#{($tcp_pkt.tcp_seq + 1).to_s(16)}"
-    
+
     #Start Capture for !IP and out desired sequence number
     pcap = PacketFu::Capture.new(
       :iface => $config[:iface],
       :start => true,
-      #Prod Filter (bnat ports)
       :filter => "tcp and not host #{target} and tcp[13] == 18 and #{bpf}"
-      #Debug Filter (open ports)
-      #:filter => "tcp and host #{target} and tcp[13] == 18 and #{bpf}"
     )
-    
+
     #Perform Scan Actions
     scan = Thread.new do
       #Recalc out checksums & put to wire
       $tcp_pkt.recalc
       $tcp_pkt.to_w
-      
+
       #double tap port
       sleep 0.075
       $tcp_pkt.to_w
     end
-    
+
     #Check for stray SYN/ACK Responses in just this attempt
     analyze=Thread.new do
-      loop {
-	pcap.stream.each {
-	  |pkt| packet = PacketFu::Packet.parse(pkt)
-	    #For every packet we see we load it into a array of hashes
-	    synack_hash = {
-	      "ip" => packet.ip_saddr.to_s,
-	      "port" => packet.tcp_sport.to_s
-	    }
-	    synack_array.push(synack_hash)
-	}  
-      }
+      loop do
+        pcap.stream.each do |pkt| 
+          packet = PacketFu::Packet.parse(pkt)
+          
+          #For every packet we see we load it into a array of hashes
+          synack_hash = {
+            "ip" => packet.ip_saddr.to_s,
+            "port" => packet.tcp_sport.to_s
+          }
+          synack_array.push(synack_hash)
+        end  
+      end
     end
-      
+
     #Wait until scan is complete before continuing
     scan.join
     sleep 0.05
     analyze.terminate
-    
+
     #De-duplicate responses received (retrans will occur w/o RST)
     synack_array.uniq!
-     
+
     #Load BNAT Pairs to Array
     synack_array.each do |synack|
       $bnatarray << "[BNAT Instance] Request: #{target} Response: #{synack["ip"]} Port: #{synack["port"]}"
     end
-  }
+
+  end
 end
 
 #Define CIDR Netblock
@@ -139,10 +140,10 @@ puts "Performing BNAT scan...\n"
 
 #Create a progress bar to display our status
 pbar = ProgressBar.new("Scan Progress:", cidr4.size)
-(start..fin).each_with_index {|addr,i|
+(start..fin).each_with_index do |addr,i|
   pbar.set(i+1)
   scanip(addr.ip)
-}
+end
 
 puts "\nCompleted BNAT scan\n"
 puts "\nWe found #{$bnatarray.length} instance(s) of BNAT\n"
