@@ -2,6 +2,7 @@ require 'packetfu'
 require 'netaddr'
 require 'optparse'
 require 'ostruct'
+require 'pp'
 
 options = OpenStruct.new
 options.targets = []
@@ -58,18 +59,18 @@ end
 
 def scan_ip(target,ports)
   tcp_pkt = get_tcp_packet
-  tcp_pkt.target = target
+  tcp_pkt.ip_daddr = target
 
   ports.each do |port|
-    tcp_pkt.tcp_dst = port
+    tcp_pkt.tcp_dst = port.to_i
     tcp_pkt.tcp_src = rand(64511)+1024
     tcp_pkt.tcp_seq = rand(64511)+1024
 
     bpf =
       # debug (check for open port)
-      "host #{target} and tcp[13] == 18 and " +
+      #"host #{target} and tcp[13] == 18 and " +
       # live (check for bnat port)
-      #"not host #{target} and tcp[13] == 18 and " + 
+      "not host #{target} and tcp[13] == 18 and " + 
       "tcp [8:4] == 0x#{(tcp_pkt.tcp_seq + 1).to_s(16)}"
 
     pcap = get_capture(bpf)
@@ -86,10 +87,10 @@ def scan_ip(target,ports)
         pcap.stream.each do |pkt|
           tcp_resp_pkt = PacketFu::Packet.parse(pkt)
           puts "[+] Discovered BNAT Service"
-          puts "Request:"
-          puts tcp_pkt.ip_dsr + ":" + tcp_pkt.tcp_dst + ":" + tcp_pkt.seq 
-          puts "Response:"
-          puts tcp_resp_pkt.ip_src + ":" + tcp_pkt.tcp_src + ":" + tcp_pkt.ack
+          sent_msg = tcp_pkt.ip_daddr.to_s + ":" + tcp_pkt.tcp_dst.to_s + "(" + tcp_pkt.tcp_seq.to_s + ")"
+          recv_msg = tcp_resp_pkt.ip_saddr.to_s + ":" + tcp_resp_pkt.tcp_src.to_s + "(" + tcp_resp_pkt.tcp_ack.to_s + ")"
+          puts sent_msg + " ==> " + recv_msg
+          self.terminate
         end
       end
     end
@@ -97,8 +98,6 @@ def scan_ip(target,ports)
     scan.join
     sleep 0.05
     analyze.terminate
-
-    pcap.close
   end
 end
 
@@ -122,7 +121,7 @@ def run(options)
       fin = NetAddr::CIDR.create(cidr.last)
 
       (start..fin).each do |addr|
-        scan_ip(addr.ip, options.port)
+        scan_ip(addr.ip, options.ports)
       end
     rescue => e
       puts e
