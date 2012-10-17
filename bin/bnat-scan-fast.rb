@@ -60,7 +60,7 @@ $ips = 0
 def scanip(target)
   #Set Target IP
   $tcp_pkt.ip_daddr=target
-  
+
   #Ruby Scan Command
   scan=Thread.new do
     $tcp_pkt.tcp_src=rand(64511)+1024
@@ -75,27 +75,27 @@ def scanrange(range)
   #Clean off garbage characters from the file
   range.gsub!("\s","")
   range.gsub!("\n","")
-  
+
   #Define CIDR Netblock
   cidr4 = NetAddr::CIDR.create(range)
-  
+
   #Determine start and end IP of range
   start = NetAddr::CIDR.create(cidr4.first)
   fin = NetAddr::CIDR.create(cidr4.last)
   $ips += cidr4.size
-  
+
   #Scan Range
-  (start..fin).each {|addr| 
+  (start..fin).each do |addr| 
     scanip(addr.ip)
-  }
+  end
 end
 
 #Load Ranges From File
 ranges = []
 range_file = File.new(ARGV[0],"r")
-range_file.each {|range|
+range_file.each do |range|
   ranges << range
-}
+end
 
 #Mark Start Scan Time
 start_time = Time.now.utc
@@ -103,10 +103,10 @@ puts "Scan start time: #{start_time}"
 
 #Scan Each Range
 pbar = ProgressBar.new("Scan Progress:", ranges.length)
-ranges.each_with_index {|range,i|
+ranges.each_with_index do |range,i|
   pbar.set(i+1)
   scanrange(range)
-}
+end
 
 #Mark Scan Completion and Run Time in Seconds
 puts "\nBNAT Scanned #{$ips} IPs in #{Time.now - start_time}s"

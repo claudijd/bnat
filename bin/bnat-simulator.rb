@@ -30,32 +30,34 @@ cap = PacketFu::Capture.new(
 
 #Loop through any match to our filter and respond with 192.168.1.1
 listen=Thread.new do
-loop {cap.stream.each {|pkt| synpkt = PacketFu::Packet.parse(pkt)
-    puts "got the syn"
-    synackpkt = PacketFu::TCPPacket.new(
-      :config=>$config,
-      :timeout=> 0.1,
-      :flavor=>"Windows"
-    )
-    #Simulate BNAT SYN/ACK
-    synackpkt.ip_saddr="192.168.1.1"
-    #Simulate Normal SYN/ACK
-    #synackpkt.ip_saddr=synpkt.ip_daddr
-    synackpkt.ip_daddr=synpkt.ip_saddr
-    synackpkt.eth_saddr=synpkt.eth_daddr
-    synackpkt.eth_daddr=synpkt.eth_saddr
-    synackpkt.tcp_sport=synpkt.tcp_dport
-    synackpkt.tcp_dport=synpkt.tcp_sport
-    synackpkt.tcp_flags.syn=1
-    synackpkt.tcp_flags.ack=1
-    synackpkt.tcp_ack=synpkt.tcp_seq+1
-    synackpkt.tcp_seq=rand(64511)+1024
-    synackpkt.tcp_win=183
-    synackpkt.recalc
-    synackpkt.to_w
-    puts "sent the syn/ack"
-  }
-}
+  loop do
+    cap.stream.each do |pkt| 
+      synpkt = PacketFu::Packet.parse(pkt)
+      puts "got the syn"
+      synackpkt = PacketFu::TCPPacket.new(
+        :config=>$config,
+        :timeout=> 0.1,
+        :flavor=>"Windows"
+      )
+      #Simulate BNAT SYN/ACK
+      synackpkt.ip_saddr="192.168.1.1"
+      #Simulate Normal SYN/ACK
+      #synackpkt.ip_saddr=synpkt.ip_daddr
+      synackpkt.ip_daddr=synpkt.ip_saddr
+      synackpkt.eth_saddr=synpkt.eth_daddr
+      synackpkt.eth_daddr=synpkt.eth_saddr
+      synackpkt.tcp_sport=synpkt.tcp_dport
+      synackpkt.tcp_dport=synpkt.tcp_sport
+      synackpkt.tcp_flags.syn=1
+      synackpkt.tcp_flags.ack=1
+      synackpkt.tcp_ack=synpkt.tcp_seq+1
+      synackpkt.tcp_seq=rand(64511)+1024
+      synackpkt.tcp_win=183
+      synackpkt.recalc
+      synackpkt.to_w
+      puts "sent the syn/ack"
+    end
+  end
 end
 
 listen.join
