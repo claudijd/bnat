@@ -1,156 +1,133 @@
-#bnat-scan - A tool to actively detect BNAT by scanning a single IP or CIDR
-#  netblock
-#
-#Jonathan Claudius
-#Copyright (C) 2011 Trustwave
-#
-#This program is free software: you can redistribute it and/or modify it under
-#the terms of the GNU General Public License as published by the Free Software
-#Foundation, either version 3 of the License, or (at your option) any later
-#version.
-#
-#This program is distributed in the hope that it will be useful, but WITHOUT
-#ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-#FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-#
-#You should have received a copy of the GNU General Public License along with
-#this program. If not, see <http://www.gnu.org/licenses/>.
-
-require 'rubygems'
 require 'packetfu'
 require 'netaddr'
-require 'progressbar'
+require 'optparse'
+require 'ostruct'
+require 'pp'
 
-#Define the ports that we are going to test for BNAT
-$portarray = [80]
+options = OpenStruct.new
+options.targets = []
+options.ports = []
 
-#Array to Store our Findings
-$bnatarray = []
+OptionParser.new do |opts|
+  opts.banner = "Usage: bnat_scan.rb [options]"
 
-#Spit version
-puts "\nbnat-scan v0.3\n"
+  opts.on("-t", "--targets [TARGETS]", "A list of IP/CIDR Blocks") do |t|
+    options.targets << t
+  end
 
-def usage
-  puts "\nUsage: ruby bnat-scan.rb <ipaddress OR CIDR netblock>\n"
-  puts "\nWARNING: your scanning host must be directly connected to the Internet w/o firewall/router/nat service\n\n"
-  exit
-end
+  opts.on("-p", "--ports [PORTS]", "A list of ports to scan") do |p|
+    options.ports << p
+  end
 
-if ARGV.length != 1
-  usage()
-end
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+end.parse!
 
-#Get the things set that we don't wantch to touch during run time
-$config = PacketFu::Utils.whoami?()
-#use this if you want an explicit scan interface
-#config = PacketFu::Utils.whoami?(:iface=>"eth0") 
-$tcp_pkt = PacketFu::TCPPacket.new(
-  :config=> $config,
-  :timeout=> 0.1,
-  :flavor=>"Windows")
-$tcp_pkt.tcp_flags.syn=1
-$tcp_pkt.tcp_win=14600
-$tcp_pkt.tcp_options="MSS:1460,SACKOK,TS:3853;0,NOP,WS:5"
-
-def scanip(target)
-  
-  #Set target IP on packet object
-  $tcp_pkt.ip_daddr=target
-  
-  #Scan each port an atomic unit
-  $portarray.each { |port|
-    
-    #Set Destination Port
-    $tcp_pkt.tcp_dst=port
-    
-    #Stand up some hash/arrays for tracking purposes
-    synack_hash = Hash.new
-    synack_array = Array.new
-      
-    #Don't trust OS to randomize source/seq
-    $tcp_pkt.tcp_src=rand(64511)+1024
-    $tcp_pkt.tcp_seq=rand(64511)+1024
-    
-    #Create a BPF eq to responding seq ack for capturing
-    bpf = "tcp [8:4] == 0x#{($tcp_pkt.tcp_seq + 1).to_s(16)}"
-    
-    #Start Capture for !IP and out desired sequence number
-    pcap = PacketFu::Capture.new(
-      :iface => $config[:iface],
-      :start => true,
-      #Prod Filter (bnat ports)
-      :filter => "tcp and not host #{target} and tcp[13] == 18 and #{bpf}"
-      #Debug Filter (open ports)
-      #:filter => "tcp and host #{target} and tcp[13] == 18 and #{bpf}"
-    )
-    
-    #Perform Scan Actions
-    scan = Thread.new do
-      #Recalc out checksums & put to wire
-      $tcp_pkt.recalc
-      $tcp_pkt.to_w
-      
-      #double tap port
-      sleep 0.075
-      $tcp_pkt.to_w
-    end
-    
-    #Check for stray SYN/ACK Responses in just this attempt
-    analyze=Thread.new do
-      loop {
-	pcap.stream.each {
-	  |pkt| packet = PacketFu::Packet.parse(pkt)
-	    #For every packet we see we load it into a array of hashes
-	    synack_hash = {
-	      "ip" => packet.ip_saddr.to_s,
-	      "port" => packet.tcp_sport.to_s
-	    }
-	    synack_array.push(synack_hash)
-	}  
-      }
-    end
-      
-    #Wait until scan is complete before continuing
-    scan.join
-    sleep 0.05
-    analyze.terminate
-    
-    #De-duplicate responses received (retrans will occur w/o RST)
-    synack_array.uniq!
-     
-    #Load BNAT Pairs to Array
-    synack_array.each do |synack|
-      $bnatarray << "[BNAT Instance] Request: #{target} Response: #{synack["ip"]} Port: #{synack["port"]}"
-    end
-  }
-end
-
-#Define CIDR Netblock
-cidr4 = NetAddr::CIDR.create(ARGV[0])
-
-#Say how big out scan scope is
-puts "Scan scope has #{cidr4.size} IP's\n\n"
-
-#Determine our first and last IP in the range
-start = NetAddr::CIDR.create(cidr4.first)
-fin = NetAddr::CIDR.create(cidr4.last)
-
-puts "Performing BNAT scan...\n"
-
-#Create a progress bar to display our status
-pbar = ProgressBar.new("Scan Progress:", cidr4.size)
-(start..fin).each_with_index {|addr,i|
-  pbar.set(i+1)
-  scanip(addr.ip)
-}
-
-puts "\nCompleted BNAT scan\n"
-puts "\nWe found #{$bnatarray.length} instance(s) of BNAT\n"
-
-if $bnatarray != nil
-  $bnatarray.each do |b|
-    puts "#{b}\n"
+def get_packetfu_config
+  begin
+    packetfu_config = PacketFu::Utils.whoami?()
+    return packetfu_config
+  rescue => e
+    puts e
+    puts "Root access is required to perform a raw capture"
+    exit
   end
 end
 
-puts "\n"
+def get_tcp_packet
+  tcp_pkt = PacketFu::TCPPacket.new(
+    :config=> get_packetfu_config,
+    :timeout=> 0.1,
+    :flavor=>"Windows"
+  )
+  tcp_pkt.tcp_flags.syn=1
+  tcp_pkt.tcp_win=14600
+  tcp_pkt.tcp_options="MSS:1460,SACKOK,TS:3853;0,NOP,WS:5"
+
+  return tcp_pkt
+end
+
+def get_capture(bpf)
+  PacketFu::Capture.new(
+    :iface => get_packetfu_config[:iface],
+    :start => true,
+    :filter => "tcp and #{bpf}"
+  )
+end
+
+def scan_ip(target,ports)
+  tcp_pkt = get_tcp_packet
+  tcp_pkt.ip_daddr = target
+
+  ports.each do |port|
+    tcp_pkt.tcp_dst = port.to_i
+    tcp_pkt.tcp_src = rand(64511)+1024
+    tcp_pkt.tcp_seq = rand(64511)+1024
+
+    bpf =
+      # debug (check for open port)
+      #"host #{target} and tcp[13] == 18 and " +
+      # live (check for bnat port)
+      "not host #{target} and tcp[13] == 18 and " + 
+      "tcp [8:4] == 0x#{(tcp_pkt.tcp_seq + 1).to_s(16)}"
+
+    pcap = get_capture(bpf)
+
+    scan = Thread.new do
+      tcp_pkt.recalc
+      tcp_pkt.to_w
+      sleep 0.075
+      tcp_pkt.to_w
+    end
+
+    analyze = Thread.new do
+      loop do
+        pcap.stream.each do |pkt|
+          tcp_resp_pkt = PacketFu::Packet.parse(pkt)
+          puts "[+] Discovered BNAT Service"
+          sent_msg = tcp_pkt.ip_daddr.to_s + ":" + tcp_pkt.tcp_dst.to_s + "(" + tcp_pkt.tcp_seq.to_s + ")"
+          recv_msg = tcp_resp_pkt.ip_saddr.to_s + ":" + tcp_resp_pkt.tcp_src.to_s + "(" + tcp_resp_pkt.tcp_ack.to_s + ")"
+          puts sent_msg + " ==> " + recv_msg
+          self.terminate
+        end
+      end
+    end
+
+    scan.join
+    sleep 0.05
+    analyze.terminate
+  end
+end
+
+def run(options)
+
+  if options.targets.size == 0
+    puts "You need to specify targets with the -t flag"
+    exit
+  end
+
+  if options.ports.size == 0
+    puts "You need to specify ports with the -p flag"
+    exit
+  end
+
+  options.targets.each do |target|
+    begin
+      cidr = NetAddr::CIDR.create(target)
+
+      start = NetAddr::CIDR.create(cidr.first)
+      fin = NetAddr::CIDR.create(cidr.last)
+
+      (start..fin).each do |addr|
+        scan_ip(addr.ip, options.ports)
+      end
+    rescue => e
+      puts e
+      puts "Failed to parse " + target + " as a CIDR target"
+    end
+  end
+end
+
+run(options)
