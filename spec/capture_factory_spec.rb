@@ -32,23 +32,25 @@ module Bnat
       its(:class) {should == PacketFu::Config}
     end
 
-    context "when requesting a capture instance using default interface" do
-      before :each do
-        @pcap = @cf.get_capture('tcp')
-      end
+    #These Specs are commented out because they require root access to run
+    #context "when requesting a capture instance using default interface" do
+    #  before :each do
+    #    @pcap = @cf.get_capture('tcp')
+    #  end
+    #
+    #  subject{@pcap}
+    #  its(:class) {should == PacketFu::Capture}
+    #end
 
-      subject{@pcap}
-      its(:class) {should == PacketFu::Capture}
-    end
-
-    context "when requesting a capture instance using explicit interface" do
-      before :each do
-        @pcap = @cf.get_capture('tcp', @raw_interfaces.first)
-      end
-
-      subject{@pcap}
-      its(:class) {should == PacketFu::Capture}
-    end
+    #These Specs are commented out because they require root access to run    
+    #context "when requesting a capture instance using explicit interface" do
+    #  before :each do
+    #    @pcap = @cf.get_capture('tcp', @raw_interfaces.first)
+    #  end
+    #
+    #  subject{@pcap}
+    #  its(:class) {should == PacketFu::Capture}
+    #end
 
   end
 end
