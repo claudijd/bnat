@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'packetfu'
 require 'set'
 
@@ -6,7 +7,7 @@ require 'set'
 module Bnat 
   class CaptureFactory
 
-    attr_reader :configs, :interfaces
+    attr_reader :configs, :interface
  
     # @param [String] a string of the interface name
     def initialize(interface)
@@ -20,7 +21,7 @@ module Bnat
       ret = PacketFu::Capture.new(
         :iface => @interface,
         :start => true,
-        :bpf => bpf
+        :filter => bpf
       )
 
       return ret
