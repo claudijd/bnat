@@ -34,8 +34,6 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-puts options.port
-
 cf = Bnat::CaptureFactory.new(options.interface)
 pf = Bnat::PacketFactory.new(options.interface)
 
@@ -51,19 +49,10 @@ listen = Thread.new do
   loop do
     pcap.stream.each do |pkt|
       syn_ack_pkt = PacketFu::Packet.parse(pkt)
-
+      
       puts "got the syn/ack"
       
-      ack_pkt = pf.get_ack_probe()
-      ack_pkt.ip_saddr = syn_ack_pkt.ip_daddr
-      ack_pkt.ip_daddr = syn_ack_pkt.ip_saddr
-      ack_pkt.eth_saddr = syn_ack_pkt.eth_daddr
-      ack_pkt.eth_daddr = syn_ack_pkt.eth_saddr
-      ack_pkt.tcp_sport = syn_ack_pkt.tcp_dport
-      ack_pkt.tcp_dport = syn_ack_pkt.tcp_sport
-      ack_pkt.tcp_ack = syn_ack_pkt.tcp_seq+1
-      ack_pkt.tcp_seq = syn_ack_pkt.tcp_ack
-      ack_pkt.tcp_win = 183
+      ack_pkt = pf.get_ack_from_syn_ack(syn_ack_pkt)
       ack_pkt.recalc
       ack_pkt.to_w
       
