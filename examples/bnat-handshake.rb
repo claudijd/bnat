@@ -1,84 +1,75 @@
-#bnat-handshake - A tool to PoC that BNAT tcp handshakes for advanced scenerios
-#  can be completed with "reflective acking" a SYN/ACK
-#
-#Jonathan Claudius
-#Copyright (C) 2011 Trustwave
-#
-#This program is free software: you can redistribute it and/or modify it under
-#the terms of the GNU General Public License as published by the Free Software
-#Foundation, either version 3 of the License, or (at your option) any later
-#version.
-#
-#This program is distributed in the hope that it will be useful, but WITHOUT
-#ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-#FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-#
-#You should have received a copy of the GNU General Public License along with
-#this program. If not, see <http://www.gnu.org/licenses/>.
+$:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
-require 'rubygems'
-require 'packetfu'
+require 'optparse'
+require 'ostruct'
+require 'bnat'
 
-$target = ARGV[0]
-$port = ARGV[1]
-$gatewaymac= ARGV[2]
+options = OpenStruct.new
+options.target = ""
+options.port = 0
+options.interface = "eth0"
 
-#usage: ruby bnat-handshake.rb <targetip> <port>
-#example: ruby bnat-handshake.rb 74.125.225.84 80
+OptionParser.new do |opts|
+  opts.banner = "Usage: rvmsudo ruby bnat-handshake.rb [options]"
 
-#Get our local int config
-$config = PacketFu::Utils.whoami?()
+  opts.on("-t", "--target [TARGET]", "The IP of the system to test") do |t|
+    options.target = t
+  end
 
-#Build out a Raw TCP Packet
-synpkt = PacketFu::TCPPacket.new(
-  :config=>$config,
-  :timeout=> 0.1,
-  :flavor=>"Windows"
-)
-synpkt.ip_saddr=$config[:ip_saddr]
-synpkt.ip_daddr="#{$target}"
-synpkt.tcp_sport=rand(64511)+1024
-synpkt.tcp_dport=$port.to_i
-synpkt.tcp_win=14600
-synpkt.tcp_options="MSS:1460,SACKOK,TS:3853;0,NOP,WS:5"
-synpkt.eth_daddr=$gatewaymac
-synpkt.tcp_flags.syn=1
-synpkt.recalc
+  opts.on("-p", "--port [PORT]", "The port to test") do |p|
+    options.port = p
+  end
+  
+  opts.on("-i", "--interface [INTERFACE]", "The interface to scan from") do |i|
+    options.interface = i
+  end
 
-#Start capture
-cap = PacketFu::Capture.new(
-  :iface => $config[:iface], :start => true,
-  :filter => "tcp and dst #{$config[:ip_saddr]} and tcp[13] == 18"
-)
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts ""
+    puts opts
+    puts ""
+    puts "Example: rvmsudo ruby bnat-handshake.rb -t 192.168.1.1 -p 80"
+    puts ""
+    exit
+  end
+end.parse!
 
-#push syn to wire
-synpkt.to_w
+puts options.port
+
+cf = Bnat::CaptureFactory.new(options.interface)
+pf = Bnat::PacketFactory.new(options.interface)
+
+bpf = "tcp and tcp[13] == 18"
+pcap = cf.get_capture(bpf)
+
+syn_pkt = pf.get_syn_probe(:ip => options.target, :port => options.port)
+syn_pkt.recalc
+syn_pkt.to_w
 puts "sent the syn"
 
-listen=Thread.new do
-  loop {cap.stream.each {|pkt| synackpkt = PacketFu::Packet.parse(pkt)
-    puts "got the syn/ack"
-    ackpkt = PacketFu::TCPPacket.new(
-      :config=>$config,
-      :timeout=> 0.1,
-      :flavor=>"Windows"
-    )
-    ackpkt.ip_saddr=synackpkt.ip_daddr
-    ackpkt.ip_daddr=synackpkt.ip_saddr
-    ackpkt.eth_saddr=synackpkt.eth_daddr
-    ackpkt.eth_daddr=synackpkt.eth_saddr
-    ackpkt.tcp_sport=synackpkt.tcp_dport
-    ackpkt.tcp_dport=synackpkt.tcp_sport
-    ackpkt.tcp_flags.syn=0
-    ackpkt.tcp_flags.ack=1
-    ackpkt.tcp_ack=synackpkt.tcp_seq+1
-    ackpkt.tcp_seq=synackpkt.tcp_ack
-    ackpkt.tcp_win=183
-    ackpkt.recalc
-    ackpkt.to_w
-    puts "sent the ack"
-  }
-  }
+listen = Thread.new do
+  loop do
+    pcap.stream.each do |pkt|
+      syn_ack_pkt = PacketFu::Packet.parse(pkt)
+
+      puts "got the syn/ack"
+      
+      ack_pkt = pf.get_ack_probe()
+      ack_pkt.ip_saddr = syn_ack_pkt.ip_daddr
+      ack_pkt.ip_daddr = syn_ack_pkt.ip_saddr
+      ack_pkt.eth_saddr = syn_ack_pkt.eth_daddr
+      ack_pkt.eth_daddr = syn_ack_pkt.eth_saddr
+      ack_pkt.tcp_sport = syn_ack_pkt.tcp_dport
+      ack_pkt.tcp_dport = syn_ack_pkt.tcp_sport
+      ack_pkt.tcp_ack = syn_ack_pkt.tcp_seq+1
+      ack_pkt.tcp_seq = syn_ack_pkt.tcp_ack
+      ack_pkt.tcp_win = 183
+      ack_pkt.recalc
+      ack_pkt.to_w
+      
+      puts "sent the ack"
+    end
+  end
 end
 
 listen.join

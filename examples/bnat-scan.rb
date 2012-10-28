@@ -33,7 +33,7 @@ OptionParser.new do |opts|
     puts ""
     puts opts
     puts ""
-    puts "Example: rvmsudo ruby bnat-scan.rb -t 204.13.202.70 -p 80"
+    puts "Example: rvmsudo ruby bnat-scan.rb -t 192.168.1.1 -p 80"
     puts ""
     exit
   end
