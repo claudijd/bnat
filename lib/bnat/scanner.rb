@@ -34,9 +34,9 @@ module Bnat
                 
         #Define a BPF filter for responses
         bpf = # debug (check for open port)
-              "tcp and host #{ip} and tcp[13] == 18 and " +
+              #"tcp and host #{ip} and tcp[13] == 18 and " +
               # live (check for bnat port)
-              #"tcp and not host #{target} and tcp[13] == 18 and " + 
+              "tcp and not host #{ip} and tcp[13] == 18 and " + 
               "tcp [8:4] == 0x#{(syn_pkt.tcp_seq + 1).to_s(16)}"
         
         #Create a Capture to look for responses
