@@ -4,6 +4,8 @@ module BNAT
   module Common
 
     # A helper for generating TCP Packets
+    # @param [PacketFu::Config] config (optional)
+    # @return [PacketFu::TCPPacket]
     def get_tcp_packet(config = nil)
       PacketFu::TCPPacket.new(
         :config => config,
@@ -13,6 +15,9 @@ module BNAT
     end
 
     # A helper for generating a reflective packets
+    # @param [PacketFu::TCPPacket] first_pkt
+    # @param [PacketFu::Config] config (optional)
+    # @return [PacketFu::TCPPacket] second_pkt
     def get_reflective_packet(first_pkt, config = nil)
       second_pkt = get_tcp_packet(config)
 
@@ -27,6 +32,9 @@ module BNAT
     end
 
     # A helper for generating a reflective SYN/ACK
+    # @param [PacketFu::TCPPacket] syn_pkt
+    # @param [PacketFu::Config] config (optional) 
+    # @return [PacketFu::TCPPacket] syn_ack_pkt
     def get_reflective_syn_ack(syn_pkt, config = nil)
       syn_ack_pkt = get_reflective_packet(syn_pkt, config)
       syn_ack_pkt.tcp_flags.syn = 1
@@ -39,6 +47,9 @@ module BNAT
     end
 
     # A helper for generating a reflective PSH/ACK
+    # @param [PacketFu::TCPPacket] ack_pkt
+    # @param [PacketFu::Config] config (optional) 
+    # @return [PacketFu::TCPPacket] psh_ack_pkt
     def get_reflective_psh_ack(ack_pkt, config = nil)
       psh_ack_pkt = get_reflective_packet(ack_pkt, config)
       psh_ack_pkt.tcp_flags.syn = 0
@@ -51,6 +62,9 @@ module BNAT
     end
 
     # A helper for generating a reflective PSH/ACK
+    # @param [PacketFu::TCPPacket] syn_ack_pkt
+    # @param [PacketFu::Config] config (optional) 
+    # @return [PacketFu::TCPPacket] ack_pkt
     def get_reflective_ack(syn_ack_pkt, config = nil)
       ack_pkt = get_reflective_packet(syn_ack_pkt, config)
       ack_pkt.tcp_flags.syn = 0
@@ -63,6 +77,9 @@ module BNAT
     end  
 
     # A helper for generating packet captures
+    # @param [String] int - The interface name
+    # @param [String] filter - The BPF filter for the capture 
+    # @return [PacketFu::Capture]
     def get_capture(int, filter)
       PacketFu::Capture.new(
         :iface => int,
@@ -71,6 +88,9 @@ module BNAT
       )
     end
 
+    # A helper for generating a reflective BPF filter string
+    # @param [PacketFu::TCPPacket] pkt
+    # @param [String] filter - The BPF filter that's reflective to this packet
     def get_reflective_bpf(pkt)
       "src #{pkt.ip_daddr} " +
       "and dst #{pkt.ip_saddr} " +
