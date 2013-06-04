@@ -7,7 +7,7 @@ module BNAT
     # @param [PacketFu::Config] config (optional)
     # @return [PacketFu::TCPPacket]
     def get_tcp_packet(config = nil)
-      PacketFu::TCPPacket.new(
+      BNAT::TCPPacket.new(
         :config => config,
         :timeout => 0.1,
         :flavor => "Windows"

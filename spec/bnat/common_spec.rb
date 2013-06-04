@@ -9,7 +9,7 @@ module BNAT
     end
 
     it "should generate a TCP packet" do
-      @helper.get_tcp_packet().should be_kind_of(PacketFu::TCPPacket)
+      @helper.get_tcp_packet().should be_kind_of(BNAT::TCPPacket)
     end
 
     context "when generating generic reflective packets" do
@@ -27,7 +27,7 @@ module BNAT
 
       subject{@second}
 
-      its(:class) {should == PacketFu::TCPPacket}
+      its(:class) {should == BNAT::TCPPacket}
       its(:ip_saddr) {should == "192.168.1.2"}
       its(:ip_daddr) {should == "192.168.1.1"}
       its(:eth_saddr) {should == "bb:bb:bb:bb:bb:bb"}
@@ -53,7 +53,7 @@ module BNAT
 
       subject{@syn_ack_pkt}
 
-      its(:class) {should == PacketFu::TCPPacket}
+      its(:class) {should == BNAT::TCPPacket}
       its(:ip_saddr) {should == "192.168.1.2"}
       its(:ip_daddr) {should == "192.168.1.1"}
       its(:eth_saddr) {should == "bb:bb:bb:bb:bb:bb"}
@@ -88,7 +88,7 @@ module BNAT
 
       subject{@psh_ack_pkt}
 
-      its(:class) {should == PacketFu::TCPPacket}
+      its(:class) {should == BNAT::TCPPacket}
       its(:ip_saddr) {should == "192.168.1.2"}
       its(:ip_daddr) {should == "192.168.1.1"}
       its(:eth_saddr) {should == "bb:bb:bb:bb:bb:bb"}
@@ -125,7 +125,7 @@ module BNAT
 
       subject{@ack_pkt}
 
-      its(:class) {should == PacketFu::TCPPacket}
+      its(:class) {should == BNAT::TCPPacket}
       its(:ip_saddr) {should == "192.168.1.2"}
       its(:ip_daddr) {should == "192.168.1.1"}
       its(:eth_saddr) {should == "bb:bb:bb:bb:bb:bb"}

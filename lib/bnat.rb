@@ -1,6 +1,6 @@
 require 'bnat/version'
-#require 'bnat/packet'
+require 'bnat/common'
+require 'bnat/tcp_packet'
 #require 'bnat/capture_factory'
 #require 'bnat/packet_factory'
 #require 'bnat/scanner'
-require 'bnat/common'
