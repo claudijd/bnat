@@ -1,6 +1,7 @@
 # BNAT
 
 [![Build Status](https://secure.travis-ci.org/claudijd/bnat.png)](http://travis-ci.org/claudijd/bnat)
+[![Code Climate](https://codeclimate.com/github/claudijd/bnat.png)](https://codeclimate.com/github/claudijd/bnat)
 
 BNAT (Broken NAT) is namely defined as IP communication that is being improperly nat'd to create an inoperable communication channel. A common example of BNAT is found in asymmetric routing where we (intentionally or unintentionally) create a logical layer 3 loop in a TCP/IP session between a client and a server. This is commonly found in complex routing scenarios or situations where mistakes are "corrected" to make something work without understanding or caring about the actual flow of traffic.
 
