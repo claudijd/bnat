@@ -76,6 +76,35 @@ module BNAT
       it "should not be ip_port_bnat?" do
         subject.ip_port_bnat?(@syn_ack_pkt).should == false
       end
+
+      it "should not be ip_match?" do
+        subject.ip_match?(@syn_ack_pkt).should == false
+      end
+
+      it "should be port_match?" do
+        subject.port_match?(@syn_ack_pkt).should == true
+      end
+
+      it "should be ack_match?" do
+        subject.ack_match?(@syn_ack_pkt).should == true
+      end
+
+      it "should not be src_ip_match?" do
+        subject.src_ip_match?(@syn_ack_pkt).should == false
+      end
+
+      it "should be dst_ip_match?" do
+        subject.dst_ip_match?(@syn_ack_pkt).should == true
+      end
+
+      it "should be src_port_match?" do
+        subject.src_port_match?(@syn_ack_pkt).should == true
+      end
+
+      it "should be dst_port_match?" do
+        subject.dst_port_match?(@syn_ack_pkt).should == true
+      end
+
     end
 
     context "when checking the comparison methods against port_bnat" do
@@ -102,6 +131,35 @@ module BNAT
       it "should not be ip_port_bnat?" do
         subject.ip_port_bnat?(@syn_ack_pkt).should == false
       end
+
+      it "should be ip_match?" do
+        subject.ip_match?(@syn_ack_pkt).should == true
+      end
+
+      it "should not be port_match?" do
+        subject.port_match?(@syn_ack_pkt).should == false
+      end
+
+      it "should be ack_match?" do
+        subject.ack_match?(@syn_ack_pkt).should == true
+      end
+
+      it "should be src_ip_match?" do
+        subject.src_ip_match?(@syn_ack_pkt).should == true
+      end
+
+      it "should be dst_ip_match?" do
+        subject.dst_ip_match?(@syn_ack_pkt).should == true
+      end
+
+      it "should not be src_port_match?" do
+        subject.src_port_match?(@syn_ack_pkt).should == false
+      end
+
+      it "should be dst_port_match?" do
+        subject.dst_port_match?(@syn_ack_pkt).should == true
+      end
+
     end
 
     context "when checking the comparison methods against ip_port_bnat" do
@@ -128,6 +186,35 @@ module BNAT
       it "should be ip_port_bnat?" do
         subject.ip_port_bnat?(@syn_ack_pkt).should == true
       end
+
+      it "should not be ip_match?" do
+        subject.ip_match?(@syn_ack_pkt).should == false
+      end
+
+      it "should not be port_match?" do
+        subject.port_match?(@syn_ack_pkt).should == false
+      end
+
+      it "should be ack_match?" do
+        subject.ack_match?(@syn_ack_pkt).should == true
+      end
+
+      it "should be src_ip_match?" do
+        subject.src_ip_match?(@syn_ack_pkt).should == false
+      end
+
+      it "should be dst_ip_match?" do
+        subject.dst_ip_match?(@syn_ack_pkt).should == true
+      end
+
+      it "should not be src_port_match?" do
+        subject.src_port_match?(@syn_ack_pkt).should == false
+      end
+
+      it "should be dst_port_match?" do
+        subject.dst_port_match?(@syn_ack_pkt).should == true
+      end
+
     end
 
   end
