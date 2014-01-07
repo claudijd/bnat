@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 #bnat-router - A tool to actively hijack TCP-based BNAT identified by
 #  bnat-scan/bnat-pcap
 #

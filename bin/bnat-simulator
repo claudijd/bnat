@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 #bnat-simulator - A tool to simulate a BNAT service
 #
 #Jonathan Claudius

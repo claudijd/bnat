@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 #bnat-pcap - A tool to passively detect BNAT in static pcap files
 #
 #Jonathan Claudius
