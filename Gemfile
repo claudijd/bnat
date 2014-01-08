@@ -1,6 +1,4 @@
 source 'https://rubygems.org'
 
-gem 'rspec'
-gem 'rake'
-gem 'netaddr'
-gem 'packetfu'
+# Specify gem's dependencies in bnat.gemspec
+gemspec
