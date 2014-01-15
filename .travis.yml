@@ -1,4 +1,6 @@
 language: ruby
+before_install:
+ - sudo apt-get install libpcap-dev -qq
 rvm:
   - 2.0.0
   - 1.9.3
