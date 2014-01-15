@@ -19,6 +19,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency('packetfu', '>= 0.9.2')
   gem.add_dependency('pcaprub', '>= 0.11.2')
+  gem.add_dependency('network_interface')
   gem.add_dependency('netaddr')
 
   gem.add_development_dependency('bundler')

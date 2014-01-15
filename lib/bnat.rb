@@ -1,6 +1,8 @@
+require 'packetfu'
+
 require 'bnat/version'
 require 'bnat/common'
 require 'bnat/tcp_packet'
-#require 'bnat/capture_factory'
-#require 'bnat/packet_factory'
-#require 'bnat/scanner'
+
+# PacketFu::Utils Monkey Patch
+require 'ext/utils.rb'
