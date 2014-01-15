@@ -1,28 +1,37 @@
 #!/usr/bin/env ruby
-require 'packetfu'
+
+$:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+
+require 'bnat'
+require 'logger'
+
+logger = Logger.new(STDOUT)
+logger.level = Logger::DEBUG
 
 config = PacketFu::Utils.whoami?()
-#config = PacketFu::Utils.whoami?(:iface=>"en1")
+
+logger.debug("Starting Capture on #{config[:iface]}...")
+logger.debug("Scan me at #{config[:ip_saddr]}")
 
 cap = PacketFu::Capture.new(
-  :iface => $config[:iface], :start => true,
-  :filter => "tcp and dst #{$config[:ip_saddr]} and tcp[13] == 2"
+  :iface => config[:iface], :start => true,
+  :filter => "tcp and dst #{config[:ip_saddr]} and tcp[13] == 2"
 )
 
 listen=Thread.new do
   loop do
     cap.stream.each do |pkt|
       synpkt = PacketFu::Packet.parse(pkt)
-      puts "got the syn"
+      logger.debug("Received SYN from #{synpkt.ip_saddr}")
       synackpkt = PacketFu::TCPPacket.new(
-        :config=>$config,
+        :config=> config,
         :timeout=> 0.1,
         :flavor=>"Windows"
       )
        
       # Feel free to hard code any of the 
       # attributes in the reply you'd like
-      # to forge
+      # to forge.
       synackpkt.ip_saddr=synpkt.ip_daddr
       synackpkt.ip_daddr=synpkt.ip_saddr
       synackpkt.eth_saddr=synpkt.eth_daddr
@@ -36,7 +45,8 @@ listen=Thread.new do
       synackpkt.tcp_win=183
       synackpkt.recalc
       synackpkt.to_w
-      puts "sent the syn/ack"
+
+      logger.debug("Sent SYN/ACK to #{synpkt.ip_daddr}")
     end
   end
 end

@@ -17,12 +17,12 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
-  gem.add_dependency('packetfu', '>= 0.9.2')
-  gem.add_dependency('pcaprub', '>= 0.11.2')
-  gem.add_dependency('network_interface')
-  gem.add_dependency('netaddr')
+  gem.add_dependency 'packetfu', '>= 1.1.10'
+  gem.add_dependency 'pcaprub'
+  gem.add_dependency 'network_interface'
+  gem.add_dependency 'netaddr'
 
-  gem.add_development_dependency('bundler')
-  gem.add_development_dependency('rake')
-  gem.add_development_dependency('rspec')
+  gem.add_development_dependency 'bundler'
+  gem.add_development_dependency 'rake'
+  gem.add_development_dependency 'rspec'
 end
