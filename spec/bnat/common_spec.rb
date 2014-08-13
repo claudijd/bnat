@@ -1,4 +1,5 @@
 require 'bnat'
+require 'rspec/its'
 
 module BNAT
   describe Common do
