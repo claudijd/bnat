@@ -6,6 +6,10 @@ module BNAT
       @rules_added = []
     end
 
+    def type
+      "IPFW"
+    end
+
     def rules
       `ipfw list`.chomp.split("\n")
     end
@@ -37,6 +41,10 @@ module BNAT
       @rules_added = []
     end
 
+    def type
+      "IPTables"
+    end
+
     def rules
       # TODO: implement this
       raise "Not implemented yet, sorry"
@@ -64,10 +72,14 @@ module BNAT
       if ipfw_path.size > 0
         return BNAT::IPFW.new(ipfw_path)
       elsif iptables_path.size > 0
-        return BNAT::IPFW.new(iptables_path)
+        return BNAT::IPTables.new(iptables_path)
       else
         raise "Unable to detect firewall (ipfw/iptables)"
       end
+    end
+
+    def type
+      @firewall.type
     end
 
     def suppress_rsts(ip = PacketFu::Utils.default_ip)

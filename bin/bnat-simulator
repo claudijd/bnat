@@ -5,6 +5,10 @@ $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 require 'bnat'
 require 'logger'
 
+unless Process.uid == 0
+  raise 'You are not running as root, you need these rights for low-level packet control'
+end
+
 logger = Logger.new(STDOUT)
 logger.level = Logger::DEBUG
 
@@ -27,6 +31,7 @@ begin
   # the service isn't really listening, we're 
   # just manually faking everything
   firewall = BNAT::Firewall.new()
+  logger.debug("Detected #{firewall.type} firewall")
   logger.debug("Suppressing RSTs")
   firewall.suppress_rsts
 
@@ -73,8 +78,6 @@ begin
   listen.join
 
 ensure
-  
   logger.debug("Removing RST Suppression Rules")  
   firewall.remove_rules
-
 end
