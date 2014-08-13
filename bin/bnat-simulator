@@ -18,7 +18,7 @@ bnat_port = 1338
 config = PacketFu::Utils.whoami?()
 
 logger.debug("Starting Capture on #{config[:iface]}...")
-logger.debug("Scan me at #{config[:ip_saddr]}")
+logger.debug("Scan me at #{config[:ip_saddr]}:#{port}")
 
 cap = PacketFu::Capture.new(
   :iface => config[:iface],
