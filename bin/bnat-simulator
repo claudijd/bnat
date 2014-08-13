@@ -13,6 +13,7 @@ logger = Logger.new(STDOUT)
 logger.level = Logger::DEBUG
 
 port = 1337
+bnat_port = 1338
 
 config = PacketFu::Utils.whoami?()
 
@@ -20,7 +21,8 @@ logger.debug("Starting Capture on #{config[:iface]}...")
 logger.debug("Scan me at #{config[:ip_saddr]}")
 
 cap = PacketFu::Capture.new(
-  :iface => config[:iface], :start => true,
+  :iface => config[:iface],
+  :start => true,
   :filter => "tcp and dst #{config[:ip_saddr]} and port 1337 and tcp[13] == 2"
 )
 
@@ -61,7 +63,10 @@ begin
       synackpkt.ip_daddr=synpkt.ip_saddr
       synackpkt.eth_saddr=synpkt.eth_daddr
       synackpkt.eth_daddr=synpkt.eth_saddr
-      synackpkt.tcp_sport=synpkt.tcp_dport
+
+      # SYN/ACKs will reply with BNAT port
+      synackpkt.tcp_sport=bnat_port
+      
       synackpkt.tcp_dport=synpkt.tcp_sport
       synackpkt.tcp_flags.syn=1
       synackpkt.tcp_flags.ack=1
