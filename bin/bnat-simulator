@@ -49,10 +49,10 @@ begin
       synpkt = PacketFu::Packet.parse(pkt)
       logger.debug("Received SYN from #{synpkt.ip_saddr}")
       synackpkt = PacketFu::TCPPacket.new(
-        :config=> config,
-        :timeout=> 0.1,
-        :flavor=>"Windows"
-      )
+                    :config=> config,
+                    :timeout=> 0.1,
+                    :flavor=> "Windows"
+                  )
        
       # Feel free to hard code any of the 
       # attributes in the reply you'd like
