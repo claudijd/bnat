@@ -33,10 +33,17 @@ module Bnat
         syn_pkt = @pf.get_syn_probe(:ip => ip, :port => port)
                 
         #Define a BPF filter for responses
-        bpf = # debug (check for open port)
-              #"tcp and host #{ip} and tcp[13] == 18 and " +
-              # live (check for bnat port)
-              "tcp and not host #{ip} and tcp[13] == 18 and " + 
+        
+        # *** debug (check for open port) ***
+        #bpf = "tcp and host #{ip} and tcp[13] == 18 and " +
+        #      "tcp [8:4] == 0x#{(syn_pkt.tcp_seq + 1).to_s(16)}"
+        
+        # live (check for IP-based bnat)
+        #bpf = "tcp and not host #{ip} and tcp[13] == 18 and " + 
+        #      "tcp [8:4] == 0x#{(syn_pkt.tcp_seq + 1).to_s(16)}"
+        
+        # live (check for port-based bnat)
+        bpf = "tcp and not port #{port} and host #{ip} and tcp[13] == 18 and " + 
               "tcp [8:4] == 0x#{(syn_pkt.tcp_seq + 1).to_s(16)}"
         
         #Create a Capture to look for responses
