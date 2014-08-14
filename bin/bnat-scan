@@ -9,7 +9,7 @@ require 'bnat'
 options = OpenStruct.new
 options.targets = []
 options.ports = []
-options.interface = "eth0"
+options.interface = PacketFu::Utils.default_int
 options.fast = false
 
 OptionParser.new do |opts|
