@@ -6,7 +6,8 @@ require 'bnat'
 require 'logger'
 
 unless Process.uid == 0
-  raise 'You are not running as root, you need these rights for low-level packet control'
+  puts 'You are not running as root, you need these rights for low-level packet control'
+  exit
 end
 
 logger = Logger.new(STDOUT)

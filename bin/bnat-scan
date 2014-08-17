@@ -6,6 +6,11 @@ require 'optparse'
 require 'ostruct'
 require 'bnat'
 
+unless Process.uid == 0
+  puts 'You are not running as root, you need these rights for low-level packet control'
+  exit
+end
+
 options = OpenStruct.new
 options.targets = []
 options.ports = []
