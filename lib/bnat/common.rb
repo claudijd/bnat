@@ -4,6 +4,9 @@ require 'nokogiri'
 module BNAT
   module Common
 
+    # Helper to turn a packet into a simplified hash
+    # @param [PacketFu::TCPPacket] packet
+    # @return [String]
     def packet_to_hash(packet)
       {
         :eth_saddr => packet.eth_saddr,
@@ -18,6 +21,9 @@ module BNAT
       }
     end
 
+    # Helper to turn a packet into a simplified hash
+    # @param [PacketFu::TCPPacket] packet
+    # @return [String]
     def packet_to_xml(packet)
       builder = Nokogiri::XML::Builder.new do |xml|
                   xml.packet {
@@ -43,11 +49,14 @@ module BNAT
       builder.doc.root.to_xml(:indent => 2)
     end
 
+    # Helper for generating a TCPPacket
+    # @param [PacketFu::Config] config (optional)
+    # @return [PacketFu::TCPPacket] packet
     def get_tcp_packet(config = nil)
       PacketFu::TCPPacket.new(
         :config=> config,
         :timeout=> 0.1,
-        :flavor=>"Windows"
+        :flavor=> "Windows"
       )
     end
 
