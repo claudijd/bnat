@@ -23,12 +23,12 @@ module BNAT
                   xml.packet {
                     xml.eth_saddr = packet.eth_saddr
                     xml.eth_daddr = packet.eth_daddr
-                    xml.ip_saddr = packet.ip_saddr
-                    xml.ip_daddr = packet.ip_daddr
+                    xml.ip_saddr  = packet.ip_saddr
+                    xml.ip_daddr  = packet.ip_daddr
                     xml.tcp_sport = packet.tcp_sport
                     xml.tcp_dport = packet.tcp_dport
-                    xml.tcp_seq = packet.tcp_seq
-                    xml.tcp_ack = packet.tcp_ack
+                    xml.tcp_seq   = packet.tcp_seq
+                    xml.tcp_ack   = packet.tcp_ack
                     xml.tcp_flags {
                       xml.urg = packet.tcp_flags.to_h[:urg]
                       xml.ack = packet.tcp_flags.to_h[:ack]
