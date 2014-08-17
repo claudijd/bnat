@@ -4,7 +4,7 @@ require 'set'
 
 # A factory for generating capturing objects on demand
 
-module Bnat 
+module BNAT 
   class CaptureFactory
 
     attr_reader :configs, :interface

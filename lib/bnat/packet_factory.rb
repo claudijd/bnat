@@ -3,7 +3,7 @@ require 'packetfu'
 
 # A factory for generating packet objects on demand
 
-module Bnat 
+module BNAT 
   class PacketFactory
  
     # @param [String] a string of the interface name

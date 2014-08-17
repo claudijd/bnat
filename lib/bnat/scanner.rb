@@ -17,8 +17,8 @@ module BNAT
       @ports = opts[:ports]
       @targets = opts[:targets]
       @response_timeout = opts[:response_timeout] || 0.05
-      @pf = Bnat::PacketFactory.new(@iface)
-      @cf = Bnat::CaptureFactory.new(@iface)
+      @pf = BNAT::PacketFactory.new(@iface)
+      @cf = BNAT::CaptureFactory.new(@iface)
     end
     
     # @param [String] a string IP to scan
