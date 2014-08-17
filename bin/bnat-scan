@@ -31,10 +31,6 @@ OptionParser.new do |opts|
   opts.on("-i", "--interface [INTERFACE]", "The interface to scan from") do |i|
     options.interface = i
   end
-  
-  opts.on("-f", "--[no-]fast", "just send syn's don't wait for responses") do |f|
-    options.fast = f
-  end
 
   opts.on_tail("-h", "--help", "Show this message") do
     puts ""
@@ -49,6 +45,5 @@ end.parse!
 BNAT::Scanner.new(
   :iface => options.interface,
   :ports => options.ports.collect {|p| p.to_i},
-  :targets => options.targets,
-  :fast => options.fast
+  :targets => options.targets
 ).scan

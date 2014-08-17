@@ -18,7 +18,6 @@ module BNAT
       @targets = opts[:targets]
       @pf = Bnat::PacketFactory.new(@iface)
       @cf = Bnat::CaptureFactory.new(@iface)
-      @fast = opts[:fast] || false
     end
     
     # @param [String] a string IP to scan
@@ -55,26 +54,21 @@ module BNAT
           syn_pkt.to_w
         end
         
-        if @fast == false
-          #Analyze Packets on the Wire for Matches
-          analyze = Thread.new do
-            loop do
-              pcap.stream.each do |pkt|
-                syn_ack_pkt = PacketFu::Packet.parse(pkt)
-                ret << BNAT::Result.new(syn_pkt, syn_ack_pkt)
+        analyze = Thread.new do
+          loop do
+            pcap.stream.each do |pkt|
+              syn_ack_pkt = PacketFu::Packet.parse(pkt)
+              ret << BNAT::Result.new(syn_pkt, syn_ack_pkt)
 
-                self.terminate
-              end
+              self.terminate
             end
           end
         end
         
         scan.join
         
-        if @fast == false
-          sleep 0.05
-          analyze.terminate
-        end
+        sleep 0.05
+        analyze.terminate
       end
       
       return ret
