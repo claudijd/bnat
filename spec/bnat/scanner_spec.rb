@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'bnat'
 require 'packetfu'
 
-module Bnat
+module BNAT
  describe Scanner do
 
    before :each do
