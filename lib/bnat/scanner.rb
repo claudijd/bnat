@@ -63,12 +63,8 @@ module Bnat
             loop do
               pcap.stream.each do |pkt|
                 syn_ack_pkt = PacketFu::Packet.parse(pkt)
-                
-                ret << {
-                  :sent => syn_pkt,
-                  :recv => syn_ack_pkt
-                }
-  
+                ret << BNAT::Result.new(syn_pkt, syn_ack_pkt)
+
                 self.terminate
               end
             end
@@ -98,23 +94,13 @@ module Bnat
           fin = NetAddr::CIDR.create(cidr.last)
           
           (start..fin).each do |addr|
-            scan_ip(addr.ip).each do |bnat|
-              report(bnat[:sent],  bnat[:recv])
+            scan_ip(addr.ip).each do |bnat_result|
+              puts bnat_result.to_s
             end
           end
         end
         
       end
-    end
-    
-    # @param [PacketFu::Packet] the packet that was sent
-    # @param [PacketFu::Packet] the packet that was received
-    def report(sent, recv)
-      sent_msg = sent.ip_daddr + ":" + sent.tcp_dst.to_s + "(" + sent.tcp_seq.to_s + ")"
-      recv_msg = recv.ip_saddr + ":" + recv.tcp_src.to_s + "(" + recv.tcp_ack.to_s + ")"
-      
-      puts "[+] BNAT Detected"
-      puts sent_msg + " ==> " + recv_msg
     end
 
   end

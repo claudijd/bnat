@@ -21,9 +21,12 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'pcaprub'
   gem.add_dependency 'network_interface'
   gem.add_dependency 'netaddr'
+  gem.add_dependency 'json'
+  gem.add_dependency 'nokogiri'
 
   gem.add_development_dependency 'bundler'
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec'
   gem.add_development_dependency 'rspec-its'
+  gem.add_development_dependency 'pry'  
 end
