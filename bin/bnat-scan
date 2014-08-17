@@ -46,7 +46,7 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-Bnat::Scanner.new(
+BNAT::Scanner.new(
   :iface => options.interface,
   :ports => options.ports.collect {|p| p.to_i},
   :targets => options.targets,

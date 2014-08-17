@@ -3,9 +3,7 @@ require 'netaddr'
 require 'bnat'
 require 'pp'
 
-# A class for performing BNAT Scanning
-
-module Bnat 
+module BNAT 
   class Scanner
     
     attr_accessor :iface, :ports, :targets
